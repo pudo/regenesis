@@ -1,0 +1,1223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Publishing Linked Data Statistics using SDMX and RDF: worked example</title>
+  <style type="text/css">
+  .guidelines {color: #339; background-color: #ccc; -moz-border-radius: 4; border: 1px dotted #339; padding: 0.2em;}
+  .title {text-align: center; font-size: 18pt; margin-bottom: 0;}
+  .subtitle {text-align: center; font-size: 16pt}
+  </style>
+</head>
+
+<body>
+<h1 class="title">Publishing Linked Data Statistics using SDMX and RDF:</h1>
+<h1 class="subtitle">a worked example using the PESA data</h1>
+
+<h2>Introduction</h2>
+<p>This document is a companion to the guide to
+<em>Expressing Statistical Data in RDF with SDMX-RDF</em>
+<a href="#sdmx-rdf">[sdmx-rdf]</a>, and the
+UK Government <em>Guidelines on Publishing Government Statistics
+as Linked Data</em>
+<a href="#stats-guidelines">[stats-guidelines]</a>.
+Specifically, in this document we explore aspects of the encoding of
+statistical linked data based on the SDMX information model, using the
+<em>Public Expenditure Statistical Analyses</em> (PESA)
+<a href="#pesa">[pesa]</a> published
+annually by the UK Treasury. PESA is a complex dataset, but typifies a
+class of dataset the government wishes to make available as linked open data.
+We expect the design steps we illustrate below to be common to the publication of
+many kinds of statistical data.
+The aim of this guide is not to show a complete translation of the PESA
+data into RDF, but to use aspects of the PESA data to illustrate elements
+of the linked data presentation.
+</p>
+<p>We assume a basic working knowledge of RDF, and related terms such as URI. Readers
+unfamiliar with these concepts may find the RDF primer [<a href="#rdf-primer">rdf-primer</a>] useful.</p>
+
+<h2>Statistical linked data: worked example</h2>
+<p>The following worked example uses the <em>Public Expenditure
+Statistical Analyses (PESA)</em> for 2009. Sections below draw out general
+principles, and note patterns that are useful for other categories of
+statistical data. This guide assumes some basic knowledge of the Statistical
+Data and Metadata Exchange (SDMX) format. Readers unfamiliar with SDMX
+terminology should see the appendix for a very brief overview of the
+terminology, or the companion documents listed in the references for
+further details [<a href="#sdmx-rdf">sdmx-rdf</a>,
+<a href="stats-guidelines"></a>].</p>
+
+<h3>Overview of PESA data</h3>
+<p>The PESA data is published as a collection of Excel-format
+spreadsheets. For 2009, there are ten spreadsheet documents, each of
+which has a collection of worksheets. Each worksheet contains the
+observations, labelled as a table. For example, here is a fragment of
+the first table from Chapter 1 of PESA 2009:</p>
+<p></p>
+<table cellspacing="0" rules="none" border="0" style="border: 1px dotted #33f; margin-left: auto; margin-right: auto">
+  <colgroup>
+    <col style="width:216" />
+    <col style="width:55" />
+    <col style="width:55" />
+    <col style="width:55" />
+    <col style="width:55" />
+    <col style="width:55" />
+    <col style="width:60" />
+    <col style="width:55" />
+    <col style="width:55" />
+  </colgroup>
+  <tbody>
+    <tr>
+      <td colspan="9" style="width:664px" style="height:24px" align="left" valign="top"
+      ><b>Table 1.1 Total
+      Managed Expenditure, 2003-04 to 2010-11</b></td>
+    </tr>
+    <tr>
+      <td style="border-top: 1px solid #0000ff" style="height:17"
+        align="right" valign="top"
+      ><b><br />
+      </b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        colspan="5" align="center" valign="top"
+      ><b>National Statistics</b></td>
+      <td style="border-top: 1px solid #0000ff" align="right"
+        valign="top"
+      ><b><br />
+      </b></td>
+      <td style="border-top: 1px solid #0000ff" align="right"
+        valign="top"
+      ><b><br />
+      </b></td>
+      <td style="border-top: 1px solid #0000ff" align="right"
+        valign="top"
+      ><b><br />
+      </b></td>
+    </tr>
+    <tr>
+      <td style="height:17" align="right" valign="top" ><b><br />
+      </b></td>
+      <td align="right" valign="top" >2003-04<br />outturn</td>
+      <td align="right" valign="top" >2004-05<br />outturn</td>
+      <td align="right" valign="top" >2005-06<br />outturn</td>
+      <td align="right" valign="top" >2006-07<br />outturn</td>
+      <td align="right" valign="top" >2007-08<br />outturn</td>
+      <td align="right" valign="top" >2008-09<br />est. outturn</td>
+      <td align="right" valign="top" >2009-10<br />plans</td>
+      <td align="right" valign="top" >2010-11<br />plans</td>
+    </tr>
+    <tr>
+      <td style="height:17px; color:blue; font-weight: bold" align="left" >CURRENT EXPENDITURE</td>
+      <td align="left" colspan="8"></td>
+    </tr>
+    <tr>
+      <td style="height:17px; font-style: italic; color:blue" align="left" >Resource DEL</td>
+      <td align="left" colspan="8"></td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Near-cash DEL</td>
+      <td align="right" >229,076</td>
+      <td align="right" >244,551</td>
+      <td align="right" >259,826</td>
+      <td align="right" >272,340</td>
+      <td align="right" >288,390</td>
+      <td align="right" >302,973</td>
+      <td align="right" >319,900</td>
+      <td align="right" >328,800</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Non-cash</td>
+      <td align="right" >16,019</td>
+      <td align="right" >13,950</td>
+      <td align="right" >17,867</td>
+      <td align="right" >18,961</td>
+      <td align="right" >21,622</td>
+      <td align="right" >21,219</td>
+      <td align="right" >22,274</td>
+      <td align="right" >23,485</td>
+    </tr>
+    <tr>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        style="height:17" align="left" valign="top"
+      ><b>Total resource DEL</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>245,095</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>258,501</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>277,693</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>291,300</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>310,012</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>324,192</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>342,100</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>352,300</b></td>
+    </tr>
+    <tr>
+      <td style="height:17px; color:blue; font-style:italic" align="left" >Resource departmental AME</td>
+      <td align="left" colspan="8"/>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Social
+      security benefits</td>
+      <td align="right" >117,801</td>
+      <td align="right" >124,781</td>
+      <td align="right" >129,600</td>
+      <td align="right" >133,463</td>
+      <td align="right" >140,474</td>
+      <td align="right" >151,497</td>
+      <td align="right" >165,485</td>
+      <td align="right" >171,249</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Tax credits
+      (1)</td>
+      <td align="right" >9,727</td>
+      <td align="right" >11,601</td>
+      <td align="right" >12,972</td>
+      <td align="right" >14,189</td>
+      <td align="right" >15,404</td>
+      <td align="right" >18,402</td>
+      <td align="right" >20,779</td>
+      <td align="right" >21,353</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Net public
+      service pensions (2)</td>
+      <td align="right" >1,796</td>
+      <td align="right" >352</td>
+      <td align="right" >3,656</td>
+      <td align="right" >3,312</td>
+      <td align="right" >5,388</td>
+      <td align="right" >6,111</td>
+      <td align="right" >1,884</td>
+      <td align="right" >2,073</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >National
+      lottery</td>
+      <td align="right" >717</td>
+      <td align="right" >665</td>
+      <td align="right" >841</td>
+      <td align="right" >837</td>
+      <td align="right" >882</td>
+      <td align="right" >948</td>
+      <td align="right" >893</td>
+      <td align="right" >864</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >BBC domestic
+      services</td>
+      <td align="right" >2,828</td>
+      <td align="right" >2,916</td>
+      <td align="right" >3,067</td>
+      <td align="right" >3,242</td>
+      <td align="right" >3,430</td>
+      <td align="right" >3,352</td>
+      <td align="right" >3,464</td>
+      <td align="right" >3,646</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Student loans</td>
+      <td align="right" >-237</td>
+      <td align="right" >-313</td>
+      <td align="right" >-402</td>
+      <td align="right" >-467</td>
+      <td align="right" >-869</td>
+      <td align="right" >-1,191</td>
+      <td align="right" >-1,014</td>
+      <td align="right" >-1,043</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Non-cash items</td>
+      <td align="right" >27,591</td>
+      <td align="right" >28,067</td>
+      <td align="right" >37,411</td>
+      <td align="right" >44,519</td>
+      <td align="right" >49,209</td>
+      <td align="right" >103,319</td>
+      <td align="right" >49,959</td>
+      <td align="right" >51,051</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Other
+      departmental expenditure</td>
+      <td align="right" >1,853</td>
+      <td align="right" >1,368</td>
+      <td align="right" >2,119</td>
+      <td align="right" >2,820</td>
+      <td align="right" >2,156</td>
+      <td align="right" >585</td>
+      <td align="right" >1,639</td>
+      <td align="right" >1,375</td>
+    </tr>
+    <tr>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        style="height:17" align="left" valign="top"
+      ><b>Total resource departmental AME</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>162,076</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>169,437</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>189,262</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>201,916</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>216,074</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>283,024</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>243,089</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>250,568</b></td>
+    </tr>
+    <tr>
+      <td align="left" style="height:17;font-style:italic; color:blue">Resource other AME</td>
+      <td colspan="8"/>
+    </tr>
+    <tr>
+      <td style="height:15" align="left" >Net
+      expenditure transfers to the EC (3)</td>
+      <td align="right" >3,448</td>
+      <td align="right" >4,907</td>
+      <td align="right" >4,435</td>
+      <td align="right" >4,652</td>
+      <td align="right" >5,392</td>
+      <td align="right" >3,060</td>
+      <td align="right" >5,649</td>
+      <td align="right" >7,875</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Locally
+      financed expenditure</td>
+      <td align="right" >19,778</td>
+      <td align="right" >20,858</td>
+      <td align="right" >22,827</td>
+      <td align="right" >23,458</td>
+      <td align="right" >24,317</td>
+      <td align="right" >27,344</td>
+      <td align="right" >27,940</td>
+      <td align="right" >28,479</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Central
+      government gross debt interest</td>
+      <td align="right" >22,280</td>
+      <td align="right" >23,933</td>
+      <td align="right" >25,807</td>
+      <td align="right" >27,579</td>
+      <td align="right" >29,960</td>
+      <td align="right" >30,466</td>
+      <td align="right" >27,206</td>
+      <td align="right" >42,906</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >AME margin</td>
+      <td align="right" >-</td>
+      <td align="right" >-</td>
+      <td align="right" >-</td>
+      <td align="right" >-</td>
+      <td align="right" >-</td>
+      <td align="right" >-</td>
+      <td align="right" >900</td>
+      <td align="right" >1,800</td>
+    </tr>
+    <tr>
+      <td style="height:17" align="left" >Accounting
+      adjustments</td>
+      <td align="right" >-27,365</td>
+      <td align="right" >-20,857</td>
+      <td align="right" >-35,394</td>
+      <td align="right" >-41,680</td>
+      <td align="right" >-50,168</td>
+      <td align="right" >-103,625</td>
+      <td align="right" >-38,919</td>
+      <td align="right" >-39,037</td>
+    </tr>
+    <tr>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff; font-weight: bold"
+        style="height:17" align="left" valign="top"
+      >Total resource other AME</td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>18,140</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>28,840</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>17,676</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>14,009</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>9,501</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>-42,755</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>22,800</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>42,000</b></td>
+    </tr>
+    <tr>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        style="height:17" align="left" valign="top"
+      ><b>Total resource AME</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>180,216</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>198,277</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>206,938</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>215,925</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>225,575</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>240,269</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>265,900</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>292,600</b></td>
+    </tr>
+    <tr>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        style="height:17" align="left" valign="top"
+      ><b>Public sector current expenditure</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>425,311</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>456,778</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>484,631</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>507,225</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>535,587</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>564,461</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>608,000</b></td>
+      <td
+        style="border-top: 1px solid #0000ff; border-bottom: 1px solid #0000ff"
+        align="right" valign="top"  ><b>644,800</b></td>
+    </tr>
+    <tr>
+      <td style="height:17px; color:blue; font-weight: bold" align="left" >CAPITAL EXPENDITURE</td>
+      <td>.... [elided] ...</td>
+      <td colspan="7"/>
+    </tr>
+  </tbody>
+</table>
+
+<p>Table 1.2 from PESA 2009 is entitled &quot;Table 1.2 Total Managed Expenditure in real terms,
+2003-04 to 2011-12&quot;. It has the same structure as table 1.1, but the figures are
+adjusted to show the effects of inflation. Table 1.3 is rather different in structure,
+and other tables in other chapters show very different presentations of the underlying
+PESA data hypercube, to give different insights into the allocation of public finances.</p>
+
+<p>When we consider how to structure a collection of data using SDMX, we need to decide
+how to partition the data into SDMX <em>datasets</em>. A dataset  a collection of statistical
+observations, organized into
+of <em>time series</em> which share the same dimensions. It is clear that this level of description
+falls somwehere between individual tables and the entire PESA collection. Tables 1.1
+and 1.2 share dimensional descriptions, so it would be reasonable to put them in
+one dataset together (though this is not mandatory &ndash; ultimately it is up to the
+data publisher to decide the appropriate dataset structure).
+However a dataset which was defined
+to also include table 1.3 and other tables would break the precepts of
+good dataset design suggested in the SDMX documentation
+(see <a href="sdmx-implementors-guide">[sdmx-implementors-guide]</a> section 3.4 <em>Best Practices</em>).
+Consequently, publishing the PESA data requires us to define a collection of SDMX
+datasets, with a relatively
+complex mapping of published Excel tables to  datasets.  It is likely that the PESA documents
+are derived from an underlying <em>hypercube</em> of
+public accounting data in the Treasury, which is currently not published.
+The ideal route to publishing the PESA statistics as linked data would be
+based on the structure in that hypercube. In its absence, we must
+surmise its structure from the published Excel spreadsheets. However,
+this does not especially impact our use of PESA's spreadsheets as
+a pedagogical example of using SDMX-RDF.
+</p>
+
+<h2>Name spaces</h2>
+<p>RDF uses <em>uniform resource identifiers</em>, or URI's, to name concepts and properties.
+One of the useful consequences of this choice is that things with similar names can
+be disambiguated through <em>namespaces</em>.
+To abbreviate long URI strings, we generally use the form <code>prefix:name</code>,
+where the <code>prefix</code> is a short string which stands for the
+full namespace URI. However, rules of the Turtle RDF syntax used in
+the following examples sometimes mean that we cannot use the prefixed
+short-form names, and will write out URI's in full, surrounded by
+angle-brackets: &lt; &gt;. In this worked example,
+we use the following namespaces (in addition to the well-known namespaces
+for concepts from RDF, Dublin Core (DC) terms, etc:</p>
+
+<ul>
+<li><code>http://source.data.gov.uk/dataset/pesa/</code><br />
+The root namespace for all PESA data published as linked open data.
+The web domain <code>source.data.gov.uk</code>
+is a region of the central data.gov.uk project's web site which is intended to
+host, or reference, data whose primary custodian is elsewhere. In time,
+we would expect to reference data directly from, for example, the UK Treasury's
+own web space.</li>
+<li><code>http://source.data.gov.uk/dataset/pesa/2009</code> (prefix <code>pesa09-dataset</code>)<br />
+Root URI for the 2009 release of PESA data.
+</li>
+<li><code>http://reference.data.gov.uk/doc/government-year/</code> (prefix <code>gov-year</code>)
+<br />A reference of concepts denoting years in the government calendar
+(as compared to, for example, normal calendar years).
+</li>
+<li><code>http://source.data.gov.uk/dsd/pesa/</code> (prefix <code>pesa-dsd</code>)<br />
+The base for dataset definitions for the PESA data. Note that this URI
+does not contain a date component, since we presume that there is reasonable
+continuity betweent the data structure definitions used each year,
+even though the actual data itself does change.
+</li>
+<li><code>http://source.data.gov.uk/dsd/pesa/dimension</code> (prefix <code>pesa-dimension</code>)<br />
+The namespace for the declaration of statistical concepts as SDMX dimensions
+in the PESA data
+</li>
+<li><code>http://finance.data.gov.uk/def/</code> (prefix <code>finance-def</code>)<br />
+Root namespace for declarations of statistical concepts in the finance sector
+of government. Since these definitions may potentially be used by many
+different agencies to publish finance related data, they are hosted on the central
+data project web space, using the <code>http://{sector}.data.gov.uk</code> pattern.
+</li>
+<li><code>http://finance.data.gov.uk/def/statistical-concept/</code> (prefix <code>finance-concept</code>)<br />
+Namespace for statistical concepts
+</li>
+</ul>
+
+<p>More guidance on the use of URI's for government data can be found elsewhere
+<a href="#uri-guidelines">[uri-guidelines]</a>.</p>
+
+<h2>Orientation</h2>
+<p>
+To give some context for the following discussions, here is a preview of the
+the kind of formulation we are aiming for.
+The table above shows that in 2003-4, the (non-inflation-adusted) total current near cash
+Department Expenditure Limit (DEL) was £229,076 million.  What do we need to express this
+unambiguously in RDF?  The number in the table is 229,076 but we need to clearly define
+what this refers to.  Ultimately we're going to represent this number like this:
+</p>
+<pre><code>&lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2003-04&gt;
+    a sdmx:Observation;
+    sdmx-dimension:refPeriod &lt;http://reference.data.gov.uk/doc/government-year/2003-2004&gt;;
+    pesa-dimension:inflationAdjustment &lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;;
+    pesa-dimension:expenditureType &lt;http://finance.data.gov.uk/def/expenditure-type/current&gt;;
+    pesa-dimension:expenditureCategory &lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;;
+    sdmx-attribute:unitMeasure &lt;http://finance.data.gov.uk/def/currency/GBP&gt;;
+    sdmx-attribute:unitMult sdmx-code:unitMult-6;
+    sdmx:obsValue 229076;
+    .</code></pre>
+
+<p>
+The following sections explain the various component elements of this description.
+</p>
+
+<h2>Overall structure</h2>
+<p>
+SDMX does not provide a convenient means to describe a collection of related datasets.
+However, the VOID vocabulary <a href="void">[void]</a> does provide the concepts to describe the
+overall PESA data, and its relations to the constituent datasets.</p>
+<p>We model the overall PESA collection as a <code>void:Dataset</code>. Each
+<code>sdmx:DataSet</code> derived from the PESA data will then be a <code>void</code>
+subset of the overall collection.
+We add other basic metadata fields to the document resource, including publisher,
+date and label. The result is an RDF resource describing the dataset:
+</p>
+<pre>
+<code>&lt;http://source.data.gov.uk/dataset/pesa/2009&gt;
+    a void:Dataset;
+    rdfs:label &quot;Public Expenditure Statistical Analyses 2009&quot;@en;
+    dcterms:publisher  &lt;http://reference.data.gov.uk/id/department/hmt&gt;;
+    dcterms:created &quot;2009-04-16&quot;^^xsd:date;
+    dcterms:source &lt;http://www.hm-treasury.gov.uk/pespub_pesa09.htm&gt;;
+    void:subset &lt;http://source.data.gov.uk/dataset/pesa/chapter-1a&gt;
+    .</code></pre>
+
+<div class="guidelines">
+Guidelines
+<ul >
+<li>Use a <code>void:Dataset</code> to represent the a collection of many SDMX datasets</li>
+<li>Assign the dataset URI in the web space of the organization
+primarily responsible for curating and publishing the data, or
+in <code>source.data.gov.uk</code> as an interim measure.</li>
+<li>Use <code>void:subset</code> to relate the overall data collection
+to the constituent datasets.</li>
+</ul>
+</div>
+
+<h2>SDMX dataset</h2>
+<p>Our first example dataset will comprise data from tables 1.1 and
+1.2 of chapter 1 of PESA 2009. These two tables have the same structure,
+differing only in whether the financial figures are adjusted for
+inflation or not.</p>
+<p>The resource representing the dataset will sit under the
+<code>http://source.data.gov.uk/dataset/pesa/2009</code> URI root,
+but we will need a name for the dataset itself. To some extent this
+choice is arbitrary, since the most important considerations are that
+the URI's are used consistently when they refer to the same information
+objects, and that the metadata, such as the human-readable <code>rdfs:label</code>,
+is meaningful and search-able. However, we have found that it helps developers to be able
+to navigate the source-code form of the data if the names are also
+readable. One choice might be some agglutination of the names of the
+tables (i.e. &quot;Table 1.1&quot; and &quot;Table 1.2&quot;) together
+with their titles. However, we elected to use <code>chapter-1a</code>
+on the basis that there would be a number of other datasets (<code>chapter-1b</code>
+etc) formed from the data in chapter 1 of the PESA data collection.
+</p>
+
+<p>The dataset is where we will attach the observations in
+due course. It has the following structure:</p>
+<pre><code>&lt;http://source.data.gov.uk/dataset/pesa/chapter-1a&gt;
+    a sdmx:DataSet;
+    rdfs:label &quot;Total Managed Expenditure, 2003-04 to 2010-11&quot;@en;
+    dcterms:source &lt;http://www.hm-treasury.gov.uk/d/bud09_budgetingtables.xls&gt;;
+    sdmx:structure &lt;http://source.data.gov.uk/dsd/pesa/chapter-1a&gt;;
+    sdmx:slice &lt;http://source.data.gov.uk/dataset/pesa/2009/not-adjusted/current-expenditure/near-cash-del&gt;,
+               &lt;http://source.data.gov.uk/dataset/pesa/2009/not-adjusted/current-expenditure/non-cash&gt;,
+               &lt;http://source.data.gov.uk/dataset/pesa/2009/not-adjusted/current-expenditure/total-resource-del&gt;
+    .</code></pre>
+
+<p>The dataset structure definition, DSD, is where we define the dimensions for the
+dataset overall.</p>
+
+<pre><code>&lt;http://source.data.gov.uk/dsd/pesa/chapter-1a&gt;
+    a sdmx:DataStructureDefinition;
+    sdmx:component sdmx-dimension:refPeriod;
+    sdmx:component pesa-dimension:expenditureType;
+    sdmx:component pesa-dimension:expenditureCategory;
+    sdmx:component pesa-dimension:inflationAdjustment;
+    sdmx:component sdmx-attribute:unitMeasure;
+    sdmx:component sdmx-attribute:unitMult;
+    sdmx:component sdmx-attribute:obsStatus;
+    sdmx:componentOrder (pesa-dimension:inflationAdjustment
+                         pesa-dimension:expenditureType
+                         pesa-dimension:expenditureCategory
+                         sdmx:refPeriod
+                        ).</code></pre>
+
+<p>Note that each SDMX component &ndash; which covers dimensions, attributes and measures &ndash;
+is mentioned on the DSD but only defined as a dimension, or attribute, or measure in its
+declaration, as show below. Note also that the relation <code>sdmx:component</code> associates a component
+with a DSD, while <code>sdmx:componentOrder</code> denotes the order in which components
+should be considered, for applications in which order matters (e.g. in the construction
+of a key label). This does represent a small element of redundant duplication, but this is
+recommended practice since it allows much easier querying of the RDF model. In particular,
+the linked data query language SPARQL does not handle RDF lists very smoothly.</p>
+<div class="guidelines">
+Guidelines
+<ul >
+<li>Use a consistent pattern for synthesising the dataset URI from data in the table. Using
+the table title with spaces converted to underlines or hyphens is one reasonable option.
+An alternative is to use other structure in the source document, e.g. chapter headings,
+as a base.</li>
+<li>Add suitable metadata, including titles and provenance, to the dataset resource.</li>
+<li>Link the dataset to the DSD with <code>sdmx:structure</code>, and to the time-series
+with <code>sdmx:key</code>.</li>
+</ul>
+</div>
+
+<h2>SDMX data structure definition (key family)</h2>
+<p>As noted above, the data structure definition defines the structure of the dataset through
+its dimensions and attributes.
+</p>
+<p>Considering the data shown above, the time series are clearly based on the
+budget year (we presume these are government years not calendar years, the published Excel
+data does not make this clear). The standard concept from the SDMX cross-domain
+concepts annex for the period of time an observation applies to is REF_PERIOD.
+The RDF property for attaching this concept to the DSD as a dimension is
+<code>sdmx-dimension:refPeriod</code>, where
+the <code>sdmx-dimension</code> prefix corresponds to
+<code>http://purl.org/linked-data/sdmx/2009/dimension#</code>.
+The attribute labels for 2008, 2009 and 2010 suggest that these values are
+provisional or forecast. This can be encoded by the CL_OBS_STATUS attribute
+concept, applied to the individual observation. For example, each observation under
+2009-2010 would be marked with observation status <code>F</code> (using the
+status codes from the SDMX Cross-Domain Concepts list [<a href="sdmx-cog">sdmx-cog</a>]),
+marking it as a
+forecast. Observations without a declared status are assumed to have status
+<code>A</code>, or &quot;normal&quot;</p>
+
+<p>The left-hand column of Table 1.1 presents different categories of expenditure,
+grouped into current and capital expense. These form two additional dimensions to the
+structure of the dataset (i.e. in addition to the time period dimension). Finally, since
+we are combining tables 1.1 and 1.2 into one dataset, the choice of non inflation-adjusted
+or real-terms figures gives the final dimension.
+Hence the DSD requires three extra concept declarations to express
+the dimensions of the dataset. Finally, we note that the table's figures are expressed
+in millions of pounds sterling. SDMX provides a ready-made way, through the
+cross-domain concepts, to express the millions multiplier. We will, however, require
+a concept definition for the concept of currency.
+</p>
+<p>SDMX guidelines encourage the re-use of existing concept declarations wherever
+possible. The concepts we require are mostly specific to the PESA domain, with the
+exception of the time period values and the concept of a currency. A draft code list
+for currencies is defined at <code>http://finance.data.gov.uk/def/currency/</code>,
+based on the ISO 4217 international currency codes. The remaining concepts
+we will define as part of this worked example. Each concept follows the same
+pattern, so we will only analyse the first of them, inflation adjustment, in detail.
+</p>
+<p>
+SDMX makes a separation between the concept itself, and the way that the concept is used
+in a given DSD, so that a concept may be a dimension in one dataset but an attribute
+or a measure in another. We keep that separation in the RDF translation.
+Firstly, the concept itself is an instance of the class of <code>sdmx:Concept</code>s:</p>
+
+<pre><code>&lt;http://finance.data.gov.uk/def/statistical-concept/inflation-adjustment&gt;
+    a sdmx:Concept;
+    rdfs:label &quot;inflation adjustment&quot;@en;
+    skos:prefLabel &quot;inflation adjustment&quot;@en;
+    rdfs:comment &quot;The statistic concept of being adjusted for inflation (i.e. 'real terms') or not&quot;;
+    .</code></pre>
+
+<p>This is a coded concept which has two valid values: non inflation adjusted, and inflation-adjusted
+(or real-terms). The code list denotes this space of values, and is declared as a concept scheme:</p>
+
+<pre><code>&lt;http://finance.data.gov.uk/def/inflation-adjustment&gt;
+    a skos:ConceptScheme;
+    rdfs:label &quot;inflation-adjustment scheme&quot;@en;
+    skos:prefLabel &quot;inflation-adjustment scheme&quot;@en;
+    rdfs:comment &quot;The supported code values for inflation-adjustment&quot;;
+    skos:hasTopConcept &lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;,
+                       &lt;http://finance.data.gov.uk/def/inflation-adjustment/real-terms&gt;
+    .
+
+&lt;http://finance.data.gov.uk/def/inflation-adjustment/InflationAdjustment&gt;
+    a rdfs:Class, owl:Class;
+    rdfs:subClassOf skos:Concept;
+    rdfs:label &quot;InflationAdjustment&quot;@en;
+    skos:prefLabel &quot;InflationAdjustment&quot;@en;
+    rdfs:comment &quot;The class of names of inflation adjustment types&quot;;
+    .
+
+&lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;
+    a &lt;http://finance.data.gov.uk/def/inflation-adjustment/InflationAdjustment&gt;, skos:Concept;
+    rdfs:label &quot;not adjusted for inflation&quot;@en;
+    skos:prefLabel &quot;not adjusted for inflation&quot;@en;
+    skos:hiddenLabel &quot;not-adjusted&quot;;
+    rdfs:comment &quot;Figures that have not been adjusted for the effects of inflation&quot;;
+    skos:topConceptOf &lt;http://finance.data.gov.uk/def/inflation-adjustment&gt;;
+    .
+&lt;http://finance.data.gov.uk/def/inflation-adjustment/real-terms&gt;
+    a &lt;http://finance.data.gov.uk/def/inflation-adjustment/InflationAdjustment&gt;, skos:Concept;
+    rdfs:label &quot;adjusted for inflation (real terms)&quot;@en;
+    skos:prefLabel &quot;adjusted for inflation (real terms)&quot;@en;
+    skos:hiddenLabel &quot;real-terms&quot;;
+    rdfs:comment &quot;Figures that have not been adjusted for the effects of inflation&quot;;
+    skos:topConceptOf &lt;http://finance.data.gov.uk/def/inflation-adjustment&gt;;
+    .</code></pre>
+
+<p>The above declaration has four elements: a <code>skos:ConceptScheme</code> which is the container
+for the two <code>skos:Concept</code>s denoting the two permitted codes, and an RDF class
+declaration which will act as the <em>range</em> of the property denoting the dimension. Note
+that each code list value is both an instance of this range class, and an instance of a
+SKOS concept, which brings both aspects of the code-list declaration together.</p>
+
+<p>Finally, we declare how this concept will be used in the DSD. As mentioned above, a concept
+can play many roles in different DSD's. In this case, being inflation adjusted or not
+is a dimension of the dataset. The declaration of dimension represents the fact that it
+will be used as an RDF property whose range is the class defined above, but also connects the
+dimension property to the statistical concept and the list of valid codes:</p>
+
+<pre><code>pesa-dimension:inflationAdjustment
+    a sdmx:DimensionProperty, rdf:Property, sdmx:CodedProperty;
+    rdfs:label &quot;inflation-adjustment dimension&quot;@en;
+    rdfs:comment &quot;Dimension property representing adjustment for inflation&quot;;
+    rdfs:range &lt;http://finance.data.gov.uk/def/inflation-adjustment/InflationAdjustment&gt;;
+    sdmx:concept &lt;http://finance.data.gov.uk/def/statistical-concept/inflation-adjustment&gt;;
+    sdmx:codeList &lt;http://finance.data.gov.uk/def/inflation-adjustment&gt;;
+    .</code></pre>
+
+<p>Similar dimensions are defined for <code>expenditureType</code> (captial vs. current)
+and <code>budget-category</code>. The budget categories are taken from the cells in
+column one of the spreadsheet, for example:
+</p>
+
+<pre><code>&lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Near-cash DEL&quot;@en;
+    skos:prefLabel &quot;Near-cash DEL&quot;@en;
+    skos:hiddenlabel &quot;near-cash-del&quot;;
+    .
+&lt;http://finance.data.gov.uk/def/expenditure-category/non-cash&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Non-cash&quot;@en;
+    skos:prefLabel &quot;Non-cash&quot;@en;
+    skos:hiddenLabel &quot;non-cash&quot;;
+    .</code></pre>
+
+<p>
+A short encoding of the dimension will be used later when constructing URI's for resources denoting
+keys. The actual string chosen is unimportant, as long as it is unambiguous. Many SDMX code lists use
+short strings (three or fewer characters) to denote codes. Here we have chosen
+a canonicalised form of the code label, all lower case, with punctuation removed and
+spaces replaced by hyphens. Other patterns are equally possible. The code string is
+maintained in a <code>skos:hiddenLabel</code>, since it is not semantically meaningful
+to the concept itself, but is useful in other ways.</p>
+
+<h3>Representing sub-totals</h3>
+<p>In Table 1.1, various rows of the table (e.g. rows 10 &quot;Total resource DEL&quot;
+and 20 &quot;Total resource department AME&quot;) are sub-totals of previous
+amounts. SDMX handles such expressions by relationships among the concept values. In particular,
+a hierarchical code scheme expresses the relationship between the codes in a concept, so that
+the codes for &quot;Near cash DEL&quot; and &quot;Non cash&quot; are children of the parent
+code for &quot;Total resource DEL&quot;. In SDMX-RDF we have two ways to express hierarchical
+code schemes: <em>simple</em> and <em>complete</em>. The complete code scheme is more congruent
+to SDMX-ML's encoding, but is more complex. The simple encoding of hierarchical codes is slightly
+less flexible, but much simpler for the majority of cases. In the case of the sub-totals in
+Table 1.1, the simple encoding suffices. Using the simple encoding, we use <code>skos:narrower</code>
+assertions on the parent category to denote its children. The hierarchy for Table 1.1 is
+expressed as:
+</p>
+
+<pre><code>&lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-del&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Total resource DEL&quot;@en;
+    skos:prefLabel &quot;Total resource DEL&quot;@en;
+    skos:hiddenLabel &quot;total-resource-del&quot;;
+    skos:narrower &lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/non-cash&gt;
+    .
+
+&lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-department-ame&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Total Resource Department AME&quot;@en;
+    skos:prefLabel &quot;Total Resource Department AME&quot;@en;
+    skos:hiddenLabel &quot;total-resource-department-ame&quot;;
+    skos:narrower &lt;http://finance.data.gov.uk/def/expenditure-category/social-security-benefits&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/tax-credits&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/net-public-service-pensions&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/national-lottery&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/bbc-domestic-services&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/student-loans&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/non-cash-items&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/other-departmental-expenditure&gt;
+    .
+
+&lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-other-ame&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Total Resource other AME&quot;@en;
+    skos:prefLabel &quot;Total Resource other AME&quot;@en;
+    skos:hiddenLabel &quot;total-resource-other-ame&quot;;
+    skos:narrower &lt;http://finance.data.gov.uk/def/expenditure-category/net-expenditure-transfers-to-the-ec&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/locally-financed-expenditure&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/central-government-gross-debt-interest&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/ame-margin&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/accounting-adjustments&gt;
+    .
+
+&lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-ame&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Total Resource AME&quot;@en;
+    skos:prefLabel &quot;Total Resource AME&quot;@en;
+    skos:hiddenLabel &quot;total-resource-ame&quot;;
+    skos:narrower &lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-department-ame&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-other-ame&gt;
+    .
+
+&lt;http://finance.data.gov.uk/def/expenditure-category/public-sector-current-expenditure&gt;
+    a &lt;http://finance.data.gov.uk/def/expenditure-category/ExpenditureCategory&gt;, skos:Concept;
+    rdfs:label &quot;Public sector current expenditure&quot;@en;
+    skos:prefLabel &quot;Public sector current expenditure&quot;@en;
+    skos:hiddenLabel &quot;public-sector-current-expenditure&quot;;
+    skos:topConceptOf &lt;http://finance.data.gov.uk/def/expenditure-category/&gt;;
+    skos:narrower &lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-del&gt;,
+                  &lt;http://finance.data.gov.uk/def/expenditure-category/total-resource-ame&gt;
+    .</code></pre>
+
+<div class="guidelines">
+Guidelines
+<ul >
+<li>The dataset structure URI is in a separate namespace to the dataset itself, though
+both should be served from the data-holding organization's web space, or from
+<code>source.data.gov.uk</code>.</li>
+<li>Each dimension in the dataset becomes a dimension concept, encoded in
+RDF as a property which is an instance of <code>sdmx:DimensionProperty</code>
+and which references an <code>sdmx:Concept</code>.
+</li>
+<li>Re-use existing concepts and code-lists wherever possible</li>
+<li>If new concepts or code-lists are to be created, they are based on the URI pattern
+<code>http://{sector}.data.gov.uk/def/</code></li>
+<li>Attach a <code>skos:hiddenLabel</code> to carry the short-form of the concept used in forming
+URI paths.</li>
+<li>Represent simple cases of summation of values through a hierarchical code scheme,
+in which super-categories have <code>skos:narrower</code> relations to their child
+categories.</li>
+</ul>
+</div>
+
+<h3>Time series</h3>
+<p>Data in an SDMX dataset is usually arranged by <em>time series</em>, and that is
+the case in this dataset. Each row of tables 1.1 and 1.2 represents one time series.
+A time series is translated into RDF in two parts: as the time series object itself,
+which records various meta-data about the collection  of values in the time series,
+and then a sequence of <em>N</em> RDF resources for the <em>N</em> values in the
+time series, each of which records the value of the observation.</p>
+
+<p>There are two common patterns for publishing time series data: flattened and compact.
+They present different trade-offs, and make different usage scenarios easier or harder.
+In the flattened pattern, each observation carries all of the information necessary to
+interpret it: the dimension key values, attribute values and other annotations and
+metadata. This makes querying for, and linking to, individual observations very easy,
+since there is no need to look elsewhere for the information to locate, interpret
+or reuse the observation. However, the flattened pattern can involve a lot of
+duplication of information, since each observation's attributes and key dimensions,
+other than the reference period, do not vary from one observation in a series to another.
+The alternative more compact pattern pushes invariant information, such as attributes
+and dimension key values, up to the time series. This makes the presentation more
+compact, and, more importantly, makes it easy to locate interesting time series
+based on their properties. A linked-data client could query for any time series that
+mention a certain statistical concept as dimensions, for example. Since both of these
+patterns are useful, and since it is straightforward to specify an automated transform
+that maps between these two patterns, we recommend ultimately making both
+patterns available to linked data consumers. By relying on automated tools in the
+publishing workflow to achieve this end goal, data publishers can work with the more
+compact form but ultimately publish the expanded form.  In the case that publication
+tools are not available to support the publishing workflow, publishers should be free
+to choose whichever pattern is the more convenient or useful. It is important that
+data consumers are able to determine which different publication patterns are in use;
+investigation in this area is ongoing. </p>
+<pre><code>&lt;http://source.data.gov.uk/dataset/pesa/2009/not-adjusted/current-expenditure/near-cash-del&gt;
+    a sdmx:TimeSeries;
+    sdmx:DataSet &lt;http://source.data.gov.uk/dataset/pesa/chapter-1a&gt;;
+    sdmx-attribute:unitMeasure &lt;http://finance.data.gov.uk/def/currency/GBP&gt;;
+    sdmx-attribute:unitMult sdmx-code:unitMult-6;
+    pesa-dimension:inflationAdjustment &lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;;
+    pesa-dimension:expenditureType &lt;http://finance.data.gov.uk/def/expenditure-type/current&gt;;
+    pesa-dimension:expenditureCategory &lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;;
+    sdmx:observation &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2003-04&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2004-05&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2005-06&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2006-07&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2007-08&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2008-09&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2009-10&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2010-11&gt;
+    .</code></pre>
+
+<p>We need to
+define the properties of the measurement for the observation.
+The values in Table 1.1 are numbers, representing pounds sterling. A cell at
+the top of the worksheet notes that the values are scaled in millions. So
+our measure uses the <code>sdmx-attribute:unitMult</code> property to record the scale value on
+the measure, <code>6</code> representing a multiplier of <code>10<sup>6</sup></code>.
+The currency for the measure is pounds Sterling, represented by a standard
+code from the ISO 4217 country currency codes list.
+</p>
+
+<p>The observations themselves are then straightforward. We illustrate the compact form first:</p>
+
+<pre><code>&lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2003-04&gt;
+    a sdmx:Observation;
+    sdmx-dimension:refPeriod &lt;http://reference.data.gov.uk/doc/government-year/2003-2004&gt;;
+    sdmx:obsValue 229076;
+    .</code></pre>
+
+<p>And then the flattened pattern:</p>
+<pre><code>&lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2003-04&gt;
+    a sdmx:Observation;
+    sdmx-dimension:refPeriod &lt;http://reference.data.gov.uk/doc/government-year/2003-2004&gt;;
+    pesa-dimension:inflationAdjustment &lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;;
+    pesa-dimension:expenditureType &lt;http://finance.data.gov.uk/def/expenditure-type/current&gt;;
+    pesa-dimension:expenditureCategory &lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;;
+    sdmx-attribute:unitMeasure &lt;http://finance.data.gov.uk/def/currency/GBP&gt;;
+    sdmx-attribute:unitMult sdmx-code:unitMult-6;
+    sdmx:obsValue 229076;
+    .</code></pre>
+
+<p>The observations up to 2008-09 need no further qualification. The notes
+in the document record that the 2008-09 figure is provisional, and beyond
+that the values are forecasts. The <code>sdmx:obsStatus</code> property
+is used to record the status of an observation:
+</p>
+
+<pre><code>&lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2008-09&gt;
+    a sdmx:Observation;
+    sdmx-dimension:refPeriod &lt;http://reference.data.gov.uk/doc/government-year/2008-2009&gt;;
+    pesa-dimension:inflationAdjustment &lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;;
+    pesa-dimension:expenditureType &lt;http://finance.data.gov.uk/def/expenditure-type/current&gt;;
+    pesa-dimension:expenditureCategory &lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;;
+    sdmx-attribute:unitMeasure &lt;http://finance.data.gov.uk/def/currency/GBP&gt;;
+    sdmx-attribute:unitMult sdmx-code:unitMult-6;
+    sdmx:obsValue 302973;
+    sdmx-attribute:obsStatus sdmx-code:obsStatus-P
+    .
+
+&lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/near-cash-del/2009-10&gt;
+    a sdmx:Observation;
+    sdmx-dimension:refPeriod &lt;http://reference.data.gov.uk/doc/government-year/2009-2010&gt;;
+    pesa-dimension:inflationAdjustment &lt;http://finance.data.gov.uk/def/inflation-adjustment/not-adjusted&gt;;
+    pesa-dimension:expenditureType &lt;http://finance.data.gov.uk/def/expenditure-type/current&gt;;
+    pesa-dimension:expenditureCategory &lt;http://finance.data.gov.uk/def/expenditure-category/near-cash-del&gt;;
+    sdmx-attribute:unitMeasure &lt;http://finance.data.gov.uk/def/currency/GBP&gt;;
+    sdmx-attribute:unitMult sdmx-code:unitMult-6;
+    sdmx:obsValue 319900;
+    sdmx-attribute:obsStatus sdmx-code:obsStatus-F
+    .</code></pre>
+
+<div class="guidelines">
+Guidelines
+<ul >
+<li>The base URI for the time series is either defined in the responsible organization's own web space,
+or be based on <code>http://source.data.gov.uk/data/</code>. Beyond the base URI, the pattern
+is <code>{datasetid}/{key}</code>,
+where the key is constructed by a concatenation of the values of the dimension properties, using
+the order defined in the <code>sdmx:componentOrder</code> property of the DSD.
+However,
+this is simply a convenient means of generating unique URI's, and not the official encoding of the key
+itself.
+</li>
+<li>The key is encoded as a collection of dimension properties, whose predicate is the RDF dimension
+property and whose object is the key value.</li>
+<li>The URI for the observation is likewise formed from the key of the observation,
+including the time-series dimension value.</li>
+<li>The recommended end-state is to have values for the key (dimension) properties and attributes
+attached to both the time-series resource and each observation resource. Publishers may initally
+develop datasets in a reduced form, such as the compact pattern in which the key and common attributes
+are only attached to the time-series, then rely on tools in the workflow to achieve the final
+publication state. </li>
+<li>Although information derived from the dimensions appears in the time-series and observations keys,
+it is not recommended practice for data consumers to extract this information by analysing the URI string.
+All of the information in the URI is also present as RDF triples, and this is the correct way to
+obtain it.</li>
+</ul>
+</div>
+
+<h3>Provenance</h3>
+<p>It is important to record the provenance for published statistics, so that data
+consumers are aware of the source of the data, and its accuracy, authority, and so on.
+As a guiding principle,
+given a URI for an observation value, it should be possible to retrieve all of the
+relevant provenance statements that provide interpretation and context for that
+observation. Provenance metadata may be attached
+at any level of the dataset, including the
+observation, time-series, group, dataset and <code>void:Dataset</code> level.
+</p>
+<p>A core provenance vocabulary is available <a href="#provenance">[provenance]</a>.
+Recommended usage patterns using this vocabulary are still under development.
+In addition, the SDMX cross-domain concepts list contains a number of concepts
+that may be useful for recording provenance, including:
+</p>
+<ul>
+<li><code>sdmx-attribute:adjustment</code><br /><code>sdmx-attribute:adjustmentDetail</code><br /><code>sdmx-attribute:adjustmentCoded</code><br />
+For recording changes to collected data before publication</li>
+<li><code>sdmx-attribute:comment</code><br />General commentary</li>
+<li><code>sdmx-attribute:compilingOrg</code><br /><code>sdmx-attribute:dissOrg</code><br />
+The organization(s) responsible for the collecting data and disseminating the data, respectively.</li>
+<li><code>sdmx-attribute:contact</code><br />Whom to contact regarding the data, and that person's contact details</li>
+<li><code>sdmx-attribute:collMethod</code><br />The method of collection</li>
+<li><code>sdmx-attribute:dataComp</code><br />Computations performed on the data to derive new information</li>
+<li><code>sdmx-attribute:dataRev</code><br />The revision of the data</li>
+<li><code>sdmx-attribute:dataUpdate</code><br /><code>sdmx-attribute:metadateUpdate</code><br />The date of the most recent update</li>
+<li><code>sdmx-attribute:mAgency</code><br />The organization or expert body responsible for maintaining the code lists, data or metadata</li>
+<li><code>sdmx-attribute:recording</code><br />Processes and standards employed in computing statistical aggregates</li>
+<li><code>sdmx-attribute:sourceType</code><br />Characteristics of the raw statistical data, e.g. sample size</li>
+<li><code>sdmx-attribute:statPop</code><br />The statistical population</li>
+</ul>
+
+<div class="guidelines">
+Guidelines
+<ul >
+<li>Use concepts from the COG cross-domain concepts where possible.</li>
+<li>Additional recommendations from the core provenance vocabulary will be added in time.</li>
+</ul>
+</div>
+
+<h3>Annotations</h3>
+<p>Cell, series and dataset annotations are frequently used by statisticians to convey
+important additional information about the statistics in a dataset. SDMX provides
+notations for some these already, for example noting missing values or series breaks
+through <code>sdmx:obsStatus</code>. In other cases, annotations are free text.</p>
+<p>There are three annotations on the portion of table 1.1 shown above. Each is
+attached to the labels in column 1, corresponding to the time series.
+The first annotation is an explanation of an adjustment to the figures,
+while the second is straightforward additional information.
+An example annotation would be:</p>
+<pre><code>&lt;http://source.data.gov.uk/dataset/pesa/2009/not-adjusted/current-expenditure/tax-credits&gt;
+    a sdmx:TimeSeries;
+    sdmx:DataSet &lt;http://source.data.gov.uk/dataset/pesa/chapter-1a&gt;;
+    sdmx-attribute:unitMeasure &lt;http://finance.data.gov.uk/def/currency/GBP&gt;;
+    sdmx-attribute:unitMult sdmx-code:unitMult-6;
+    sdmx-attribute:adjustDetail
+        &quot;&quot;&quot;(1) Tax credits include working tax credits, stakeholder pension credits and Child Tax
+        Credits. Child Tax Credits do not include child allowances paid as part of Income Support
+        and Jobseekers' Allowance, which are within social security benefits.
+        &quot;&quot;&quot;@en;
+    sdmx:observation &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2003-04&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2004-05&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2005-06&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2006-07&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2007-08&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2008-09&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2009-10&gt;,
+                     &lt;http://source.data.gov.uk/data/pesa/2009/not-adjusted/current-expenditure/tax-credits/2010-11&gt;
+    .</code></pre>
+
+<div class="guidelines">
+Guidelines
+<ul >
+<li>Where possible, use existing SDMX cross-domain concepts and code-list values to denote
+annotations.</li>
+<li>Additional annotations not currently covered by SDMX cross-domain concepts should be defined
+as-needed in domain-specific vocabularies.</li>
+</ul>
+</div>
+
+
+<h1>Appendix A: Key concepts from SDMX</h1>
+<p>We use SDMX as the basis for our suggested patterns for publishing statistical data
+in RDF. Readers wanting to know more about SDMX itself should consult the
+documents on the SDMX site<a href="#sdmx">[sdmx]</a>.
+The RDF translation of the key concepts from SDMX is described
+in detail elsewhere <a href="#sdmx-rdf">[sdmx-rdf]</a>. For completeness,
+in this appendix we briefly summarise some of the key
+concepts of SDMX, as a guide to readers who are less familiar with
+SDMX itself.
+</p>
+
+<p>Statistical data in SDMX consists of a collection of numbers
+(usually). On their own, numbers are not very meaningful, so the central
+goal of statistical encoding is to supply the context that makes a
+number (e.g. 61.4) meaningful (e.g. &quot;the population of the United
+Kingdom in 2008, in millions&quot;). An individual piece of data is
+known as an <em>observation</em>. An observation may have <em>attributes</em> which
+give more information about its interpretation: for example, the units
+of measure, the multiplier (such as &quot;millions&quot; in the example
+above) or the degree of accuracy or error in the measurement, and will have a <em>measure</em> denoting the actual value.</p>
+<p>An observation will also have at least one, and typically
+several, <em>dimensions</em>. Dimensions serve to identify exactly which
+value the observation represents. Consider the population of the UK as a
+whole in 2008 (61.4 million) and 2007 (61.0 million), and the population
+of just England in 2008 (51.5 million) and 2007 (51.1 million). These
+four numbers can be classified along two dimensions: year (2007 or 2008)
+and geographical region (UK or England). The values of the dimension
+properties precisely identify an observation, and constitutes the <em>key</em>
+for the observation. So in our example data, the key <code>uk,
+2008</code> identifies the statistic 61.4, which has an attribute of being
+scaled in millions.</p>
+<p>A sequence of observations in which only one dimension varies is
+a <em>series</em>. A particular emphasis is placed on series in which
+the time of the measurement is the varying dimension, so called <em>time
+series</em>.</p>
+<p>A <em>dataset</em> is a collection of time-series, or other cross
+sections of the data. A dataset <em>contains</em> the observations that
+comprise the data, but is <em>described</em> by a <em>data
+structure definition</em> (DSD), or <em>key family</em> (the terms are
+interchangeable in the SDMX documentation, though DSD is
+the preferred term). The primary roles of the key family are to define
+the <em>concepts</em> that comprise the dimensions for the observations
+in the data set, and to identify the additional attributes that may be
+recorded for observations. Attributes may be marked as optional or
+required.</p>
+<p>A dimension property may be <em>coded</em>, which means that its
+values are taken from a controlled vocabulary or <em>code list</em>.
+Some standard code lists are defined in annexes to the SDMX
+content-oriented guidelines <a href="#sdmx-cog">[sdmx-cog]</a>;
+other standard code lists are defined by
+the main statistics-handling organisations. If necessary, new code lists
+for a dimension can be defined, though the SDMX documentation recommends
+that existing code-lists are re-used wherever possible.</p>
+
+<p>An <em>SDMX group</em> allows a number of time series to be grouped
+together because they share some common structure &ndash; e.g. they have
+some metadata attributes in common. The group provides a named structure
+to which to attach common metadata. A group is determined by
+specifying a partial key (i.e. using a subset of the complete list of
+dimensions used by the time series).
+</p>
+<p>While a group brings additional structure to the dataset by
+grouping time series together, a <em>cross-section</em>,
+or simply <em>section</em>, presents a different
+projection of the dataset by specifying a partial key which does not assume
+that the varying dimension is the time reference period. For example, a simple
+two-dimensional dataset might show sales figures by department by year. A
+group could be used, for example, to show the yearly sales figures for all
+departments serving a given market sector, whereas a section could be used to
+show the figures across all departments for the current fiscal year.</p>
+
+
+<h1>References</h1>
+<dl>
+<dt id="pesa">[pesa]</dt><dd>Public Expenditure Statistics Publications
+<a href="http://www.hm-treasury.gov.uk/pespub_index.htm">www</a>.</dd>
+
+<dt id="provenance">[provenance]</dt><dd>Open Provenance Model Vocabulary Specification
+<a href="http://purl.org/net/opmv/ns#">www</a>.</dd>
+
+<dt id="rdf-primer">[rdf-primer]</dt><dd>RDF Primer
+<a href="http://www.w3.org/TR/rdf-primer">www</a>.</dd>
+
+<dt id="sdmx">[sdmx]</dt><dd>Statistical data and metadata exchange (SDMX)
+<a href="http://www.sdmx.org">www</a>.</dd>
+
+<dt id="sdmx-cog">[sdmx-cog]</dt><dd>SDMX Content Oriented Guidelines
+<a href="http://sdmx.org/?page_id=11">www</a>.</dd>
+
+<dt id="sdmx-rdf">[sdmx-rdf]</dt><dd>Expressing Statistical Data in RDF with SDMX-RDF.
+<a href="http://code.google.com/p/publishing-statistical-data/source/browse/trunk/specs/src/main/html/index.html">draft</a>.</dd>
+
+<dt id="stats-guidelines">[stats-guidelines]</dt><dd>Guidelines on publishing statistical data on data.gov.uk.
+<em>forthcoming</em>.</dd>
+
+<dt id="uri-guidelines">[uri-guidelines]</dt><dd>Patterns for Minting URI's.
+<a href="https://123.writeboard.com/ff4ec74f0c5caa41e">basecamp</a>.</dd>
+
+<dt id="void">[void]</dt><dd>Vocabulary of Interlinked Datasets (VOID)
+<a href="http://rdfs.org/ns/void-guide">guide</a>.</dd>
+
+
+</dl>
+
+
+</body>
+</html>

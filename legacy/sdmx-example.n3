@@ -1,0 +1,91 @@
+@prefix _53: <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/>.
+@prefix _55: <http://source.data.gov.uk/data/reference/ministerial-departments/2010-03-05/>.
+@prefix _56: <http://reference.data.gov.uk/def/reference/>.
+@prefix _57: <http://reference.data.gov.uk/id/>.
+@prefix _58: <urn:uuid:0>.
+@prefix cra: <http://purl.org/okfn/def/cra/>.
+@prefix dc: <http://purl.org/dc/terms/>.
+@prefix dept: <http://reference.data.gov.uk/id/department/>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix ordf: <http://purl.org/NET/ordf/>.
+@prefix pog: <http://purl.org/okfn/id/cra/pog/>.
+@prefix pub: <http://reference.data.gov.uk/def/public-body/>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix region: <http://purl.org/okfn/id/cra/region/>.
+@prefix sdmx: <http://purl.org/linked-data/sdmx#>.
+@prefix sdmxattr: <http://purl.org/linked-data/sdmx/2009/attribute#>.
+@prefix sdmxcode: <http://purl.org/linked-data/sdmx/2009/code#>.
+@prefix sdmxdim: <http://purl.org/linked-data/sdmx/2009/dimension#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+@prefix ukcur: <http://finance.data.gov.uk/def/currency/>.
+
+ <http://purl.org/okfn/dataset/cra/2010> a sdmx:DataSet;
+     dc:source <http://www.hm-treasury.gov.uk/d/cra_2009_db.csv>;
+     sdmx:structure <http://purl.org/okfn/dsd/cra/2010>. 
+
+ <http://purl.org/okfn/dsd/cra/2010> a sdmx:DataStructureDefinition;
+     ordf:changeSet _58:c055584-a78c-11df-a250-001f5bef60ee;
+     sdmx:component sdmxattr:unitMeasure,
+         sdmxdim:refPeriod,
+         cra:department,
+         cra:expenditureType,
+         cra:obsStatus,
+         cra:pog,
+         cra:region;
+     sdmx:componentOrder ( cra:department cra:region cra:pog sdmxdim:refPeriod ). 
+
+ _53:P37S121211 a sdmx:TimeSeries;
+     sdmx:dataSet <http://purl.org/okfn/dataset/cra/2010>;
+     sdmx:observation <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/P37S121211#2008-2009>,
+         <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/P37S121211#2009-2010>,
+         <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/P37S121211#2010-2011>;
+     cra:department dept:dwp;
+     cra:expenditureType cra:CurrentExpenditure;
+     cra:function <http://purl.org/okfn/id/cofog/04.1.2>;
+     cra:pog pog:P37S121211;
+     cra:region region:scotland. 
+
+ <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/P37S121211#2008-2009> a sdmx:Observation;
+     sdmx:obsValue "12100000.0"^^<http://www.w3.org/2001/XMLSchema#float>;
+     sdmxattr:unitMeasure ukcur:GBP;
+     sdmxdim:refPeriod <http://reference.data.gov.uk/id/government-year/2008-2009>. 
+
+ <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/P37S121211#2009-2010> a sdmx:Observation;
+     sdmx:obsValue "12100000.0"^^<http://www.w3.org/2001/XMLSchema#float>;
+     sdmxattr:unitMeasure ukcur:GBP;
+     sdmxdim:refPeriod <http://reference.data.gov.uk/id/government-year/2009-2010>. 
+
+ <http://purl.org/okfn/dataset/cra/2010/dwp/scotland/P37S121211#2010-2011> a sdmx:Observation;
+     sdmx:obsValue "12100000.0"^^<http://www.w3.org/2001/XMLSchema#float>;
+     sdmxattr:obsStatus sdmxcode:obsStatus-P;
+     sdmxattr:unitMeasure ukcur:GBP;
+     sdmxdim:refPeriod <http://reference.data.gov.uk/id/government-year/2010-2011>. 
+
+ cra:CurrentExpenditure skos:inScheme cra:ExpenditureTypes;
+     skos:notation "CUR";
+     skos:prefLabel "current expenditure"@en;
+     skos:topConceptOf cra:ExpenditureTypes. 
+
+ pog:P37S121211 a cra:ProgrammeObjectGroup;
+     rdfs:isDefinedBy <http://purl.org/okfn/id/cra/pog/>;
+     skos:inScheme cra:ProgrammeObjectGroups;
+     skos:notation "P37 S121211";
+     skos:prefLabel "ADMIN COSTS OF MEASURES TO HELP UNEMPL PEOPLE MOVE FROM WELFARE T...";
+     skos:topConceptOf cra:ProgrammeObjectGroups. 
+
+ region:scotland a region:Region;
+     rdfs:isDefinedBy <http://purl.org/okfn/id/cra/region/>;
+     skos:inScheme region:Regions;
+     skos:notation "scotland";
+     skos:prefLabel "Scotland";
+     skos:topConceptOf region:Regions. 
+
+ dept:dwp a pub:Department;
+     rdfs:label "Department for Work and Pensions"@en;
+     _56:uriSet _57:department;
+     rdfs:comment "The Department is responsible for delivering support and advice through a modern network of services to people of working age, employers, pensioners, families and children and disabled people. Its key aims are to help its customers become financially independent and to help reduce child poverty."@en;
+     skos:notation "dwp";
+     skos:prefLabel "Department for Work and Pensions"@en;
+     foaf:isPrimaryTopicOf _55:dwp. 
+Action not recognized
