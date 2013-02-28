@@ -1,0 +1,6 @@
+PyYAML>=3.10
+requests>=1.1.0
+-e git+https://github.com/okfn/sqlaload#egg=sqlaload
+lxml
+argparse>=1.2.1
+Flask>=0.9

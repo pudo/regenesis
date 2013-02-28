@@ -19,7 +19,6 @@ setup(
     include_package_data=False,
     zip_safe=False,
     install_requires=[
-        "PyYAML >= 3.10"
         ],
     tests_require=[],
     entry_points={
