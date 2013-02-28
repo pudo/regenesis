@@ -4,7 +4,7 @@ from StringIO import StringIO
 
 from regenesis.mappings import KEYS_TRANSLATE, KEYS_IGNORE, KEYS_LOCALIZED
 from regenesis.formats import parse_date, parse_bool
-from regenesis.util import make_key
+from regenesis.util import make_key, flatten
 
 FIELD_TYPES = {
   'eu_vbd': parse_bool,
@@ -107,8 +107,8 @@ class Fact(object):
             offset += 1
 
         for measure in self.cube.measures:
-            m = measure.copy()
-            del m['name']
+            m = {} #measure.copy()
+            #del m['name']
             if measure['data_type'] == 'GANZ':
                 m['value'] = int(self.row[offset])
             else:
@@ -122,8 +122,25 @@ class Fact(object):
         mapping['fact_id'] = make_key(*identity_parts)
         return mapping
 
+    @property
+    def time(self):
+        return self.mapping.get(self.cube.times[0]['name'])
+
+    def get_value(self, dimension, value):
+        return self.cube.dimensions[dimension].find_value(value,
+                self.time.get('from'), self.time.get('until'))
+
+    def to_row(self):
+        out = {}
+        for key, value in self.mapping.items():
+            if not isinstance(value, dict) and key != 'fact_id':
+                value = self.get_value(key, value).id
+            out[key] = value
+        return flatten(out)
+
     def to_dict(self):
-        return self.mapping
+        #return self.mapping
+        return self.to_row()
 
     def __repr__(self):
         return repr(self.mapping)
@@ -144,6 +161,16 @@ class Value(object):
                         self.data.get('valid_from'),
                         self.data.get('valid_until'))
 
+    def match(self, key, begin_time, end_time):
+        if key != self.data.get('key'):
+            return False
+        if begin_time and self.data.get('valid_from') and \
+            begin_time < self.data.get('valid_from'):
+            return False
+        if end_time and self.data.get('valid_until') and \
+            end_time > self.data.get('valid_until'):
+            return False
+        return True
 
     def to_dict(self):
         d = self.data.copy()
@@ -160,6 +187,11 @@ class Dimension(object):
 
     def add_value(self, base_data, assoc_data):
         self.values.append(Value(self, base_data, assoc_data))
+
+    def find_value(self, key, begin_time, end_time):
+        for value in self.values:
+            if value.match(key, begin_time, end_time):
+                return value
 
     def to_dict(self):
         d = self.data.copy()
@@ -221,6 +253,7 @@ class Cube(object):
     def axes(self):
         if not hasattr(self, '_axes'):
             self._axes = list(self.sections['DQA'])
+
         return self._axes
 
     @property

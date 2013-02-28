@@ -1,6 +1,6 @@
 
 
-ETL_URL = 'postgresql:///regenesis'
+ETL_URL = 'postgresql://localhost/regenesis'
 
 
 CATALOG = {
