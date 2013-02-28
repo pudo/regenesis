@@ -3,29 +3,27 @@ from lxml import etree
 
 from regenesis.cube import Cube
 
-def fetch_index():
-    url = 'https://www.regionalstatistik.de/genesisws/services/RechercheService_2010'
+def fetch_index(catalog):
     for i in range(10):
         params = [
             ('method', 'DatenKatalog'),
-            ('kennung', ''),
-            ('passwort', ''),
+            ('kennung', catalog.get('username')),
+            ('passwort', catalog.get('password')),
             ('filter', '%s*' % i),
             ('bereich', 'Alle'),
             ('listenLaenge', ''),
             ('sprache', 'de')
             ]
-        doc = requests.get(url, params=params)
+        doc = requests.get(catalog.get('index_url'), params=params)
         doc = etree.fromstring(doc.content)
         for entry in doc.findall('.//datenKatalogEintraege/datenKatalogEintraege'):
             yield entry.findtext('./code')
 
-def fetch_cube(name):
-    url = 'https://www.regionalstatistik.de/genesisws/services/ExportService_2010'
+def fetch_cube(catalog, name):
     params = [
         ('method', 'DatenExport'),
-        ('kennung', ''),
-        ('passwort', ''),
+        ('kennung', catalog.get('username')),
+        ('passwort', catalog.get('password')),
         ('namen', name),
         ('bereich', 'Alle'),
         ('format', 'csv'),
@@ -47,35 +45,8 @@ def fetch_cube(name):
         ('stand', ''),
         ('sprache', 'de')
         ]
-    doc = requests.get(url, params=params)
+    doc = requests.get(catalog.get('export_url'), params=params)
     doc = etree.fromstring(doc.content)
     data = doc.find('.//quaderDaten').text
     return Cube(name, data)
 
-
-def main():
-    for code in fetch_index():
-        cube = fetch_cube(code)
-        from pprint import pprint
-        pprint(cube.axes)
-        return
-        #pprint(list(cube.sections['MM'].objects))
-        #pprint([f.mapping for f in cube.facts])
-        import json
-        from regenesis.export import JSONEncoder
-        fh = open('exports/%s.json' % cube.name, 'wb')
-        json.dump(cube, fh, cls=JSONEncoder, indent=2)
-        fh.close()
-
-if __name__ == '__main__':
-    #cube = fetch_cube('12613BJ003')
-    cube = fetch_cube('52411KJ001')
-    from pprint import pprint
-    #pprint(cube.facts)
-    import json
-    from regenesis.export import JSONEncoder
-    #pprint([f.mapping for f in cube.facts])
-    fh = open('exports/%s.json' % cube.name, 'wb')
-    json.dump(cube, fh, cls=JSONEncoder, indent=2)
-
-    #main()
