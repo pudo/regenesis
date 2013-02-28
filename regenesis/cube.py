@@ -4,6 +4,7 @@ from StringIO import StringIO
 
 from regenesis.mappings import KEYS_TRANSLATE, KEYS_IGNORE, KEYS_LOCALIZED
 from regenesis.formats import parse_date, parse_bool
+from regenesis.util import make_key
 
 FIELD_TYPES = {
   'eu_vbd': parse_bool,
@@ -52,8 +53,7 @@ class Section(object):
                 self._rows.append(row[1:])
         return self._rows
 
-    @property
-    def objects(self):
+    def __iter__(self):
         for data in self.rows:
             obj = {}
             is_translated = True
@@ -75,7 +75,7 @@ class Section(object):
 
     @property
     def first(self):
-        objs = list(self.objects)
+        objs = list(self)
         assert len(objs)==1, 'first() on multi-row data!'
         return objs[0]
 
@@ -90,12 +90,15 @@ class Fact(object):
     def mapping(self):
         offset = 0
         mapping = {}
+        identity_parts = []
         for axis in self.cube.axes:
             mapping[axis['name']] = self.row[offset]
+            identity_parts.append(self.row[offset])
             offset += 1
 
         for time in self.cube.times:
             time_from, time_until = parse_date(self.row[offset])
+            identity_parts.append(self.row[offset])
             mapping[time['name']] = {
                 'plain': self.row[offset],
                 'from': time_from,
@@ -116,6 +119,7 @@ class Fact(object):
             mapping[measure['name']] = m
             offset += 4
 
+        mapping['fact_id'] = make_key(*identity_parts)
         return mapping
 
     def to_dict(self):
@@ -123,6 +127,44 @@ class Fact(object):
 
     def __repr__(self):
         return repr(self.mapping)
+
+
+class Value(object):
+
+    def __init__(self, dimension, base_data, assoc_data):
+        self.dimension = dimension
+        self.data = base_data.copy()
+        self.data.update(assoc_data)
+        del self.data['name']
+
+    @property
+    def id(self):
+        return make_key(self.data.get('name'),
+                        self.data.get('key'),
+                        self.data.get('valid_from'),
+                        self.data.get('valid_until'))
+
+
+    def to_dict(self):
+        d = self.data.copy()
+        d['value_id'] = self.id
+        return d
+
+
+class Dimension(object):
+
+    def __init__(self, cube, data):
+        self.cube = cube
+        self.data = data
+        self.values = []
+
+    def add_value(self, base_data, assoc_data):
+        self.values.append(Value(self, base_data, assoc_data))
+
+    def to_dict(self):
+        d = self.data.copy()
+        d['values'] = self.values
+        return d
 
 
 class Cube(object):
@@ -155,7 +197,7 @@ class Cube(object):
                 'provenance': self.provenance,
                 'statistic': self.sections['ERH'].first,
                 'cube': self.sections['DQ'].first,
-                'units': list(self.sections['ME'].objects)
+                'units': list(self.sections['ME'])
                 }
             md['statistic'].update(self.sections['ERH-D'].first)
             md['cube'].update(self.sections['DQ-ERH'].first)
@@ -166,36 +208,31 @@ class Cube(object):
     def dimensions(self):
         if not hasattr(self, '_dimensions'):
             self._dimensions = {}
-            for dim in self.sections['MM'].objects:
-                self._dimensions[dim['name']] = dim
+            for dim in self.sections['MM']:
+                self._dimensions[dim['name']] = Dimension(self, dim)
             values = {}
-            for val in self.sections['KMA'].objects:
+            for val in self.sections['KMA']:
                 values[val['key']] = val
-            for dimval in self.sections['KMAZ'].objects:
-                name = dimval['name']
-                del dimval['name']
-                dimval.update(values[dimval['key']])
-                if not 'values' in self._dimensions[name]:
-                    self._dimensions[name]['values'] = []
-                self._dimensions[name]['values'].append(dimval)
+            for assoc in self.sections['KMAZ']:
+                self._dimensions[assoc['name']].add_value(values[assoc['key']], assoc)
         return self._dimensions
 
     @property
     def axes(self):
         if not hasattr(self, '_axes'):
-            self._axes = list(self.sections['DQA'].objects)
+            self._axes = list(self.sections['DQA'])
         return self._axes
 
     @property
     def times(self):
         if not hasattr(self, '_times'):
-            self._times = list(self.sections['DQZ'].objects)
+            self._times = list(self.sections['DQZ'])
         return self._times
 
     @property
     def measures(self):
         if not hasattr(self, '_measures'):
-            self._measures = list(self.sections['DQI'].objects)
+            self._measures = list(self.sections['DQI'])
         return self._measures
 
     @property

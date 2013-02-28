@@ -72,6 +72,10 @@ if __name__ == '__main__':
     cube = fetch_cube('52411KJ001')
     from pprint import pprint
     #pprint(cube.facts)
-    pprint([f.mapping for f in cube.facts])
+    import json
+    from regenesis.export import JSONEncoder
+    #pprint([f.mapping for f in cube.facts])
+    fh = open('exports/%s.json' % cube.name, 'wb')
+    json.dump(cube, fh, cls=JSONEncoder, indent=2)
 
     #main()
