@@ -92,31 +92,30 @@ class Fact(object):
         mapping = {}
         identity_parts = []
         for axis in self.cube.axes:
-            mapping[axis['name']] = self.row[offset]
+            mapping[axis.name] = self.row[offset].lower()
             identity_parts.append(self.row[offset])
             offset += 1
 
         for time in self.cube.times:
             time_from, time_until = parse_date(self.row[offset])
             identity_parts.append(self.row[offset])
-            mapping[time['name']] = {
-                'plain': self.row[offset],
+            mapping[time.name] = {
+                'value': self.row[offset],
                 'from': time_from,
                 'until': time_until
                 }
             offset += 1
 
         for measure in self.cube.measures:
-            m = {} #measure.copy()
-            #del m['name']
-            if measure['data_type'] == 'GANZ':
+            m = {}
+            if measure.data_type == 'GANZ':
                 m['value'] = int(self.row[offset])
             else:
                 m['value'] = float(self.row[offset])
             m['quality'] = self.row[offset+1]
             m['locked'] = self.row[offset+2]
             m['error'] = self.row[offset+3]
-            mapping[measure['name']] = m
+            mapping[measure.name] = m
             offset += 4
 
         mapping['fact_id'] = make_key(*identity_parts)
@@ -124,23 +123,30 @@ class Fact(object):
 
     @property
     def time(self):
-        return self.mapping.get(self.cube.times[0]['name'])
+        return self.mapping.get(self.cube.times[0].name)
 
     def get_value(self, dimension, value):
         return self.cube.dimensions[dimension].find_value(value,
                 self.time.get('from'), self.time.get('until'))
 
     def to_row(self):
-        out = {}
+        out, values = {}, {}
         for key, value in self.mapping.items():
+            if isinstance(value, dict) and 'value' in value:
+                values[key] = value.get('value')
+                del value['value']
             if not isinstance(value, dict) and key != 'fact_id':
-                value = self.get_value(key, value).id
+                value = self.get_value(key, value) 
+                if value is not None:
+                    value = value.id
             out[key] = value
-        return flatten(out)
+        out = flatten(out)
+        out.update(values)
+        return out
 
     def to_dict(self):
-        #return self.mapping
-        return self.to_row()
+        return self.mapping
+        #return self.to_row()
 
     def __repr__(self):
         return repr(self.mapping)
@@ -152,17 +158,18 @@ class Value(object):
         self.dimension = dimension
         self.data = base_data.copy()
         self.data.update(assoc_data)
-        del self.data['name']
+        self.data['name'] = self.data.get('key').lower()
+        del self.data['key']
 
     @property
     def id(self):
-        return make_key(self.data.get('name'),
-                        self.data.get('key'),
+        return make_key(self.dimension.name,
+                        self.data.get('name'),
                         self.data.get('valid_from'),
                         self.data.get('valid_until'))
 
-    def match(self, key, begin_time, end_time):
-        if key != self.data.get('key'):
+    def match(self, name, begin_time, end_time):
+        if name != self.data.get('name'):
             return False
         if begin_time and self.data.get('valid_from') and \
             begin_time < self.data.get('valid_from'):
@@ -172,8 +179,13 @@ class Value(object):
             return False
         return True
 
+    def to_row(self):
+        d = self.to_dict()
+        return d
+
     def to_dict(self):
         d = self.data.copy()
+        d['dimension_name'] = self.dimension.name
         d['value_id'] = self.id
         return d
 
@@ -182,8 +194,13 @@ class Dimension(object):
 
     def __init__(self, cube, data):
         self.cube = cube
+        data['name'] = data['name'].lower()
         self.data = data
         self.values = []
+
+    @property
+    def name(self):
+        return self.data.get('name')
 
     def add_value(self, base_data, assoc_data):
         self.values.append(Value(self, base_data, assoc_data))
@@ -198,11 +215,43 @@ class Dimension(object):
         d['values'] = self.values
         return d
 
+    def to_row(self):
+        return self.data.copy()
+
+
+class Reference(object):
+
+    def __init__(self, cube, data, type_):
+        self.cube = cube
+        data['name'] = data['name'].lower()
+        self.data = data
+        self.type_ = type_
+
+    @property
+    def name(self):
+        return self.data.get('name')
+
+    @property
+    def data_type(self):
+        return self.data.get('data_type')
+
+    def to_row(self):
+        d = self.to_dict()
+        del d['name']
+        d['dimension_name'] = self.name
+        d['cube_name'] = self.cube.name
+        return d
+
+    def to_dict(self):
+        d = self.data.copy()
+        d['type'] = self.type_
+        return d
+
 
 class Cube(object):
 
     def __init__(self, name, data):
-        self.name = name
+        self.name = name.lower()
         self.provenance, self.data = data.split('\n', 1)
 
     @property
@@ -233,6 +282,10 @@ class Cube(object):
                 }
             md['statistic'].update(self.sections['ERH-D'].first)
             md['cube'].update(self.sections['DQ-ERH'].first)
+            md['cube']['statistic_name'] = md['cube']['key'].lower()
+            del md['cube']['key']
+            md['statistic']['name'] = md['statistic']['key'].lower()
+            del md['statistic']['key']
             self._metadata = md
         return self._metadata
 
@@ -241,32 +294,35 @@ class Cube(object):
         if not hasattr(self, '_dimensions'):
             self._dimensions = {}
             for dim in self.sections['MM']:
-                self._dimensions[dim['name']] = Dimension(self, dim)
+                self._dimensions[dim['name'].lower()] = Dimension(self, dim)
             values = {}
             for val in self.sections['KMA']:
                 values[val['key']] = val
             for assoc in self.sections['KMAZ']:
-                self._dimensions[assoc['name']].add_value(values[assoc['key']], assoc)
+                self._dimensions[assoc['name'].lower()].add_value(values[assoc['key']], assoc)
         return self._dimensions
 
     @property
     def axes(self):
         if not hasattr(self, '_axes'):
-            self._axes = list(self.sections['DQA'])
-
+            self._axes = [Reference(self, a, 'axis') for a in self.sections['DQA']]
         return self._axes
 
     @property
     def times(self):
         if not hasattr(self, '_times'):
-            self._times = list(self.sections['DQZ'])
+            self._times = [Reference(self, a, 'time') for a in self.sections['DQZ']]
         return self._times
 
     @property
     def measures(self):
         if not hasattr(self, '_measures'):
-            self._measures = list(self.sections['DQI'])
+            self._measures = [Reference(self, a, 'measure') for a in self.sections['DQI']]
         return self._measures
+
+    @property
+    def references(self):
+        return self.axes + self.times + self.measures
 
     @property
     def facts(self):
@@ -282,6 +338,12 @@ class Cube(object):
             'dimensions': self.dimensions,
             'facts': self.facts
             }
+
+    def to_row(self):
+        d = self.metadata.get('cube').copy()
+        d['name'] = self.name
+        d['provenance'] = self.provenance
+        return d
 
     def __repr__(self):
         return self.provenance
