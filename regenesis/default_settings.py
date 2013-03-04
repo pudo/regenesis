@@ -1,7 +1,7 @@
 
 
 ETL_URL = 'postgresql://localhost/regenesis'
-
+DATA_DIRECTORY = 'exports/'
 
 CATALOG = {
     'regional': {

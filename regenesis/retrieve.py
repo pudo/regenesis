@@ -47,6 +47,6 @@ def fetch_cube(catalog, name):
         ]
     doc = requests.get(catalog.get('export_url'), params=params)
     doc = etree.fromstring(doc.content)
-    data = doc.find('.//quaderDaten').text
-    return Cube(name, data)
+    return doc.find('.//quaderDaten').text
+    #return Cube(name, data)
 
