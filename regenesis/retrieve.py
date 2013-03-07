@@ -1,7 +1,11 @@
 import requests
+import re
 from lxml import etree
+from HTMLParser import HTMLParser
 
 from regenesis.cube import Cube
+
+QUADER = re.compile(r"<quaderDaten>\* (.*)<\/quaderDaten>", re.S | re.M)
 
 def fetch_index(catalog):
     for i in range(10):
@@ -46,7 +50,12 @@ def fetch_cube(catalog, name):
         ('sprache', 'de')
         ]
     doc = requests.get(catalog.get('export_url'), params=params)
-    doc = etree.fromstring(doc.content)
-    return doc.find('.//quaderDaten').text
+    #print [doc.url]
+    #doc = etree.fromstring(doc.content)
+    #return doc.find('.//quaderDaten').text
+    m = QUADER.search(doc.content)
+    if m is None:
+        return
+    return HTMLParser().unescape(m.group(1))
     #return Cube(name, data)
 
