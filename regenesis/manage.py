@@ -3,8 +3,9 @@ from flask.ext.script import Manager
 
 from regenesis.core import app
 from regenesis.export import JSONEncoder
+from regenesis.cube import Cube
 from regenesis.storage import store_cube_raw, load_cube_raw, \
-    dump_cube_json
+    dump_cube_json, exists_raw
 from regenesis.retrieve import fetch_index, fetch_cube
 from regenesis.database import load_cube
 
@@ -25,7 +26,10 @@ def fetchcube(catalog_name, cube_name):
     """ Dump a single cube from a catalog. """
     catalog = get_catalog(catalog_name)
     cube_data = fetch_cube(catalog, cube_name)
-    store_cube_raw(cube_name, cube_data)
+    if cube_data is None:
+        log.warn("Could not fetch: %s", cube_name)
+    else:
+        store_cube_raw(cube_name, cube_data)
 
 
 @manager.command 
@@ -33,15 +37,23 @@ def fetch(catalog_name):
     """ Dump all cubes from a catalog. """
     catalog = get_catalog(catalog_name)
     for cube_name in fetch_index(catalog):
-        log.info("Fetching: %s", cube_name)
-        cube_data = fetch_cube(catalog, cube_name)
-        store_cube_raw(cube_name, cube_data)
+        if not exists_raw(cube_name):
+            log.info("Fetching: %s", cube_name)
+            try:
+                cube_data = fetch_cube(catalog, cube_name)
+                if cube_data is None:
+                    log.warn("Could not fetch: %s", cube_name)
+                else:
+                    store_cube_raw(cube_name, cube_data)
+            except Exception, e:
+                log.exception(e)
 
 
 @manager.command
 def loadcube(catalog_name, cube_name):
     """ Load a single cube into a database. """
-    load_cube_raw(cube_name)
+    cube_data = load_cube_raw(cube_name)
+    cube = Cube(cube_name, cube_data)
     load_cube(cube)
 
 
@@ -50,9 +62,11 @@ def load(catalog_name):
     """ Load all cubes into a database. """
     catalog = get_catalog(catalog_name)
     for cube_name in fetch_index(catalog):
-        log.info("Loading: %s", cube_name)
-        load_cube_raw(cube_name)
-        load_cube(cube)
+        if exists_raw(cube_name):
+            log.info("Loading: %s", cube_name)
+            cube_data = load_cube_raw(cube_name)
+            cube = Cube(cube_name, cube_data)
+            load_cube(cube)
 
 #    #cube = fetch_cube('12613BJ003')
 #    cube = fetch_cube('52411KJ001')
