@@ -8,6 +8,9 @@ def cube_path(cube_name, ext):
             cube_name + '.' + ext
             )
 
+def exists_raw(cube_name):
+    return os.path.isfile(cube_path(cube_name, 'raw'))
+
 def store_cube_raw(cube_name, cube_data):
     fh = open(cube_path(cube_name, 'raw'), 'wb')
     fh.write(cube_data.encode('utf-8'))
@@ -23,3 +26,4 @@ def dump_cube_json(cube):
     fh = open(cube_path(cube.name, 'json'), 'wb')
     json.dump(cube, fh, cls=JSONEncoder, indent=2)
     fh.close()
+
