@@ -11,6 +11,9 @@ log = logging.getLogger(__name__)
 
 def load_cube(cube):
     cube_table = sl.get_table(engine, 'cube')
+    if sl.find_one(engine, cube_table, name=cube.name):
+        return
+
     sl.upsert(engine, cube_table, cube.to_row(), ['name'])
 
     statistic_table = sl.get_table(engine, 'statistic')
@@ -31,7 +34,9 @@ def load_cube(cube):
                   reference.to_row(), ['cube_name', 'dimension_name'])
 
     fact_table = sl.get_table(engine, 'fact_' + cube.name)
-    for fact in cube.facts:
-        sl.upsert(engine, fact_table,
-                  fact.to_row(), ['fact_id'])
+    sl.delete(engine, fact_table)
+    for i, fact in enumerate(cube.facts):
+        sl.add_row(engine, fact_table, fact.to_row())
+        if i and i % 1000 == 0:
+            log.info("Loaded: %s rows", i)
 
