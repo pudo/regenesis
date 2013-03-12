@@ -1,6 +1,7 @@
 import logging
 
 import sqlaload as sl
+from sqlalchemy.types import BigInteger
 
 from regenesis.core import app, engine
 
@@ -34,6 +35,9 @@ def load_cube(cube):
                   reference.to_row(), ['cube_name', 'dimension_name'])
 
     fact_table = sl.get_table(engine, 'fact_' + cube.name)
+    for ref in cube.measures:
+        if ref.data_type == 'GANZ':
+            sl.create_column(engine, fact_table, ref.name, BigInteger)
     sl.delete(engine, fact_table)
     for i, fact in enumerate(cube.facts):
         sl.add_row(engine, fact_table, fact.to_row())
