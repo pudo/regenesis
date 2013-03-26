@@ -4,3 +4,5 @@ requests>=1.1.0
 lxml
 argparse>=1.2.1
 Flask>=0.9
+Flask-script
+psycopg2
