@@ -34,7 +34,7 @@ def fetch_cube(catalog, name):
         ('werte', True),
         ('metadaten', True),
         ('zusatz', True),
-        ('startjahr', ''),
+        ('startjahr', 1900),
         ('endjahr', ''),
         ('zeitscheiben', ''),
         ('inhalte', ''),
