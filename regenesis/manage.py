@@ -1,7 +1,7 @@
 import logging
 from flask.ext.script import Manager
 
-from regenesis.core import app
+from regenesis.core import app, get_catalog
 from regenesis.export import JSONEncoder
 from regenesis.cube import Cube
 from regenesis.web import app
@@ -12,13 +12,6 @@ from regenesis.database import load_cube
 
 manager = Manager(app)
 log = logging.getLogger(__name__)
-
-
-def get_catalog(catalog_name):
-    catalog = app.config.get('CATALOG').get(catalog_name)
-    if catalog is None:
-        raise ValueError('No such catalog: %s' % catalog_name)
-    return catalog
 
 
 @manager.command
