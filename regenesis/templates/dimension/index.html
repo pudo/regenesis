@@ -1,0 +1,18 @@
+{%extends "layout.html" %}
+
+{% block title %}
+  Liste der Themen- und Zeitachsen, Wertfelder.
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+          <ul>
+            {% for dimension in dimensions %}
+            <li><a href="{{ url_for('dimension.view', catalog=catalog, name=dimension.name) }}">{{ dimension.title_de }}</a> ({{ dimension.measure_type }})</li>
+            {% endfor %}
+          </ul>
+        </div>
+    </div>
+{% endblock %}
+

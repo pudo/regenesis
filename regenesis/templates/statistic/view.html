@@ -1,0 +1,17 @@
+{%extends "layout.html" %}
+
+{% block title %}
+  {{ statistic.title_de }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+          <h1>{{ statistic.title_de }}</h1>
+          {{ statistic.description_de | text }} 
+        </div>
+    </div>
+{% endblock %}
+
+
+
