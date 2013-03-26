@@ -4,6 +4,7 @@ from flask.ext.script import Manager
 from regenesis.core import app
 from regenesis.export import JSONEncoder
 from regenesis.cube import Cube
+from regenesis.web import app
 from regenesis.storage import store_cube_raw, load_cube_raw, \
     dump_cube_json, exists_raw
 from regenesis.retrieve import fetch_index, fetch_cube
@@ -32,12 +33,12 @@ def fetchcube(catalog_name, cube_name):
         store_cube_raw(cube_name, cube_data)
 
 
-@manager.command 
-def fetch(catalog_name):
+@manager.command
+def fetch(catalog_name, update=False):
     """ Dump all cubes from a catalog. """
     catalog = get_catalog(catalog_name)
     for cube_name in fetch_index(catalog):
-        if not exists_raw(cube_name):
+        if not exists_raw(cube_name) or update:
             log.info("Fetching: %s", cube_name)
             try:
                 cube_data = fetch_cube(catalog, cube_name)
@@ -54,6 +55,7 @@ def loadcube(catalog_name, cube_name):
     """ Load a single cube into a database. """
     cube_data = load_cube_raw(cube_name)
     cube = Cube(cube_name, cube_data)
+    log.info("Loading: %s (%s facts)", cube_name, len(cube.facts))
     load_cube(cube)
 
 
@@ -63,9 +65,9 @@ def load(catalog_name):
     catalog = get_catalog(catalog_name)
     for cube_name in fetch_index(catalog):
         if exists_raw(cube_name):
-            log.info("Loading: %s", cube_name)
             cube_data = load_cube_raw(cube_name)
             cube = Cube(cube_name, cube_data)
+            log.info("Loading: %s (%s facts)", cube_name, len(cube.facts))
             load_cube(cube)
 
 #    #cube = fetch_cube('12613BJ003')
