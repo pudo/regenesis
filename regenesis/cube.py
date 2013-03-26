@@ -162,21 +162,25 @@ class Value(object):
         del self.data['key']
 
     @property
+    def name(self):
+        return self.data.get('name')
+
+    @property
     def id(self):
         return make_key(self.dimension.name,
                         self.data.get('name'),
                         self.data.get('valid_from'),
                         self.data.get('valid_until'))
 
-    def match(self, name, begin_time, end_time):
-        if name != self.data.get('name'):
+    def match(self, name, begin_fact, end_fact):
+        if name != self.name:
             return False
-        if begin_time and self.data.get('valid_from') and \
-            begin_time < self.data.get('valid_from'):
-            return False
-        if end_time and self.data.get('valid_until') and \
-            end_time > self.data.get('valid_until'):
-            return False
+        #if begin_fact and self.data.get('valid_from') and \
+        #    begin_fact < self.data.get('valid_from'):
+        #    return False
+        #if end_fact and self.data.get('valid_until') and \
+        #    end_fact > self.data.get('valid_until'):
+        #    return False
         return True
 
     def to_row(self):
