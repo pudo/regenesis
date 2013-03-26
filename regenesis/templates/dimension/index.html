@@ -9,7 +9,7 @@
         <div class="span12">
           <ul>
             {% for dimension in dimensions %}
-            <li><a href="{{ url_for('dimension.view', catalog=catalog, name=dimension.name) }}">{{ dimension.title_de }}</a> ({{ dimension.measure_type }})</li>
+            <li><a href="{{ url_for('dimension.view', catalog=catalog.name, name=dimension.name) }}">{{ dimension.title_de }}</a> ({{ dimension.measure_type }})</li>
             {% endfor %}
           </ul>
         </div>
