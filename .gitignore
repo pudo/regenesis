@@ -4,3 +4,5 @@ legacy/data/*
 *.DS_Store
 *.pyc
 *.egg-info
+
+*.raw
