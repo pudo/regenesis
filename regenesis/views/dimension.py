@@ -2,9 +2,7 @@ from flask import Blueprint, render_template
 
 import sqlaload as sl
 from regenesis.core import app, engine
-
-dimension_table = sl.get_table(engine, 'dimension')
-value_table = sl.get_table(engine, 'value')
+from regenesis.database import dimension_table, value_table
 
 blueprint = Blueprint('dimension', __name__)
 

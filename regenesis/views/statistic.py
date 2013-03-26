@@ -2,8 +2,8 @@ from flask import Blueprint, render_template
 
 import sqlaload as sl
 from regenesis.core import app, engine
+from regenesis.database import statistic_table
 
-statistic_table = sl.get_table(engine, 'statistic')
 blueprint = Blueprint('statistic', __name__)
 
 @blueprint.route('/<catalog>/statistics')
