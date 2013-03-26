@@ -1,0 +1,19 @@
+{%extends "layout.html" %}
+
+{% block title %}
+  {{ catalog.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="span12">
+          <h1>{{ catalog.title }}</h1>
+          <ul>
+            <li><a href="{{ url_for('statistic.index', catalog=catalog.name) }}">Statistiken</a></li>
+            <li><a href="{{ url_for('dimension.index', catalog=catalog.name) }}">Achsen</a></li>
+          </ul>
+        </div>
+    </div>
+{% endblock %}
+
+
