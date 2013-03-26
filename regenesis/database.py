@@ -8,11 +8,9 @@ from regenesis.core import app, engine
 log = logging.getLogger(__name__)
 
 
-
-
-def load_cube(cube):
+def load_cube(cube, update=False):
     cube_table = sl.get_table(engine, 'cube')
-    if sl.find_one(engine, cube_table, name=cube.name):
+    if sl.find_one(engine, cube_table, name=cube.name) and not update:
         return
 
     sl.upsert(engine, cube_table, cube.to_row(), ['name'])

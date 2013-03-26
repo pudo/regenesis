@@ -60,7 +60,7 @@ def loadcube(catalog_name, cube_name):
 
 
 @manager.command 
-def load(catalog_name):
+def load(catalog_name, update=False):
     """ Load all cubes into a database. """
     catalog = get_catalog(catalog_name)
     for cube_name in fetch_index(catalog):
@@ -68,7 +68,7 @@ def load(catalog_name):
             cube_data = load_cube_raw(cube_name)
             cube = Cube(cube_name, cube_data)
             log.info("Loading: %s (%s facts)", cube_name, len(cube.facts))
-            load_cube(cube)
+            load_cube(cube, update=update)
 
 #    #cube = fetch_cube('12613BJ003')
 #    cube = fetch_cube('52411KJ001')
