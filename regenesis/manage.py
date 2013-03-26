@@ -62,8 +62,12 @@ def load(catalog_name, update=False):
             log.info("Loading: %s (%s facts)", cube_name, len(cube.facts))
             load_cube(cube, update=update)
 
-#    #cube = fetch_cube('12613BJ003')
-#    cube = fetch_cube('52411KJ001')
+
+@manager.command 
+def analyse():
+    from regenesis.analysis import find_denormalized
+    find_denormalized()
+
 
 if __name__ == '__main__':
     manager.run()
