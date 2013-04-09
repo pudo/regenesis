@@ -19,6 +19,7 @@ def index(catalog):
 def view(catalog, name):
     catalog = get_catalog(catalog)
     statistic = sl.find_one(engine, statistic_table, name=name)
+
     return render_template('statistic/view.html',
             catalog=catalog,
             statistic=statistic)
