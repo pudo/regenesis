@@ -1,44 +1,44 @@
 import logging
 
-import sqlaload as sl
 from sqlalchemy.types import BigInteger
 
 from regenesis.core import app, engine
 
 log = logging.getLogger(__name__)
 
-cube_table = sl.get_table(engine, 'cube')
-statistic_table = sl.get_table(engine, 'statistic')
-dimension_table = sl.get_table(engine, 'dimension')
-value_table = sl.get_table(engine, 'value')
-reference_table = sl.get_table(engine, 'reference')
+cube_table = engine.get_table('cube')
+statistic_table = engine.get_table('statistic')
+dimension_table = engine.get_table('dimension')
+value_table = engine.get_table('value')
+reference_table = engine.get_table('reference')
+
 
 def load_cube(cube, update=False):
-    if sl.find_one(engine, cube_table, name=cube.name) and not update:
+    if cube_table.find_one(name=cube.name) and not update:
         return
 
-    sl.upsert(engine, cube_table, cube.to_row(), ['name'])
-    sl.upsert(engine, statistic_table, cube.metadata.get('statistic'), ['name'])
+    engine.begin()
+
+    cube_table.upsert(cube.to_row(), ['name'])
+    statistic_table.upsert(cube.metadata.get('statistic'), ['name'])
 
     for dimension in cube.dimensions.values():
-        sl.upsert(engine, dimension_table,
-                  dimension.to_row(), ['name'])
+        dimension_table.upsert(dimension.to_row(), ['name'])
         for value in dimension.values:
-            sl.upsert(engine, value_table,
-                      value.to_row(), ['value_id'])
+            value_table.upsert(value.to_row(), ['value_id'])
 
     for reference in cube.references:
-        sl.upsert(engine, reference_table,
-                  reference.to_row(), ['cube_name', 'dimension_name'])
+        reference_table.upsert(reference.to_row(), ['cube_name', 'dimension_name'])
 
-    fact_table = sl.get_table(engine, 'fact_' + cube.name)
+    fact_table = engine.get_table('fact_' + cube.name)
     for ref in cube.measures:
         if ref.data_type == 'GANZ':
-            sl.create_column(engine, fact_table, ref.name, BigInteger)
+            fact_table.create_column(ref.name, BigInteger)
 
-    sl.delete(engine, fact_table)
+    fact_table.delete()
     for i, fact in enumerate(cube.facts):
-        sl.add_row(engine, fact_table, fact.to_row())
+        fact_table.insert(fact.to_row())
         if i and i % 1000 == 0:
             log.info("Loaded: %s rows", i)
 
+    engine.commit()

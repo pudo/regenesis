@@ -5,7 +5,7 @@ from sqlalchemy.exc import SAWarning
 warnings.filterwarnings('ignore', category=SAWarning)
 
 from flask import Flask
-import sqlaload as sl
+import dataset
 
 from regenesis import default_settings
 
@@ -13,9 +13,10 @@ app = Flask(__name__)
 app.config.from_object(default_settings)
 app.config.from_envvar('REGENESIS_SETTINGS', silent=True)
 
-engine = sl.connect(app.config.get('ETL_URL'))
+engine = dataset.connect(app.config.get('ETL_URL'))
 
 logging.basicConfig(level=logging.INFO)
+
 
 def get_catalog(catalog_name):
     catalog = app.config.get('CATALOG').get(catalog_name)
