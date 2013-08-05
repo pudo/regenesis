@@ -13,6 +13,10 @@ value_table = engine.get_table('value')
 reference_table = engine.get_table('reference')
 
 
+def get_fact_table(cube_name):
+    return engine.get_table('fact_' + cube_name)
+
+
 def load_cube(cube, update=False):
     if cube_table.find_one(name=cube.name) and not update:
         return
@@ -30,7 +34,7 @@ def load_cube(cube, update=False):
     for reference in cube.references:
         reference_table.upsert(reference.to_row(), ['cube_name', 'dimension_name'])
 
-    fact_table = engine.get_table('fact_' + cube.name)
+    fact_table = get_fact_table(cube_name)
     for ref in cube.measures:
         if ref.data_type == 'GANZ':
             fact_table.create_column(ref.name, BigInteger)
