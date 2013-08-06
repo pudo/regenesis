@@ -26,8 +26,9 @@
         <h2>Methodische Hinweise</h2>
         <p>{{desc.method | wraptext}}</p>
 
-        <h2>Quader</h2>
-        {% if has_common %}
+        <h2>Tabellen</h2>
+        <p>Die untenstehenden Tabellen enthalten die Messungen zur zur Statistik <em>{{ statistic.title_de }}</em>. Sie unterscheiden sich in ihrer geographischen Granularität sowie den enthaltenen Attributen.</p>
+        {% if has_common and False %}
             <h3>Gemeinsame Attribute</h3>
             <p>In allen Tabellen dieser Statistik werden die folgenden Attribute ausgewiesen:</p>
             <ul>
@@ -41,12 +42,19 @@
             {% for cube in group.list %}
             <div class="list-item">
                 <div class="panel">
+                    <div class="panel-heading"><i class="icon-table"></i> Tabelle <code>{{cube.name}}</code></div>
                     <ul class="list-group">
                         {% for d in cube.dimensions %}{% if d.show %}
                             <li class="list-group-item"><i class="icon-columns"></i> <a href="{{ url_for('dimension.view', catalog=catalog.name, name=d.dim_name) }}"><code>{{d.dim_name}}</code> {{ d.dim_title_de }}</a> ({{d.type_text}})</li>
                         {% endif %}{% endfor %}    
                     </ul>
-                    <div class="panel-footer"><i class="icon-table"></i> <code>{{cube.name}}</code> - Stand: {{cube.stand}}</div>
+                    <div class="btn-group">
+                        <a href="" class="btn btn-default"><i class="icon-download"></i>
+                            Rechercheversion <span class="badge">CSV</span></a>
+                        <a href="" class="btn btn-default"><i class="icon-download"></i>
+                            Rohdatenversion <span class="badge">CSV</span></a>
+                    </div>
+                    <span class="pull-right">Stand: {{cube.stand}}</span>
                 </div>
             </div>
             {% endfor %}

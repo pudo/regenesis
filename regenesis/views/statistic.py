@@ -44,8 +44,8 @@ def view(catalog, name):
     commons = {}
     for cube in cubes:
         for dim in cube['dimensions']:
-            if dim['dim_name'] in common:
-                dim['show'] = False
+            if dim['dim_name'] in common and dim['show']:
+                #dim['show'] = False
                 commons[dim['dim_name']] = dim
     return render_template('statistic/view.html',
                            catalog=catalog,
