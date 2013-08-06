@@ -1,17 +1,50 @@
 {%extends "layout.html" %}
 
+{% block metatitle %}
+  {{ catalog.title }}
+{% endblock %}
+
 {% block title %}
   {{ statistic.title_de }}
 {% endblock %}
 
+
 {% block content %}
-    <div class="row">
-        <div class="span12">
-          <h1>{{ statistic.title_de }}</h1>
-          {{ statistic.description_de | text }} 
-        </div>
-    </div>
+  <h2 class="page-title">{{ statistic.title_de }}</h2>
+  <div class="row">
+      <div class="col-12 col-sm-12 col-lg-3" id="sidebar">
+        <ul class="entries">
+            <li><i class="icon-tag"></i> Kennung: <code>{{statistic.name}}</code></li>
+            <li><i class="icon-building"></i> Art: <a href="{{desc.legal}}">{{desc.type}}</a></li>
+            <li><i class="icon-calendar"></i> Erhebung: {{desc.periodicity}}, {{desc.stag}}</li>
+            <li><i class="icon-compass"></i> Regionalebene: {{desc.geo}}</li>
+        </ul>
+        
+      </div>
+
+      <div class="col-12 col-sm-12 col-lg-9" id="page">
+        <h2>Methodische Hinweise</h2>
+        <p>{{desc.method | wraptext}}</p>
+
+        <h2>Quader</h2>
+        {% for group in cubes | groupby('admlevel') %}
+            <h3>{{group.grouper[1]}}</h3>
+            {% for cube in group.list %}
+            <div class="list-item">
+                {{loop.index}} - {{cube.name}}
+                {% for d in cube.dimensions %}
+                    {{ d.dim_title_de }} &middot;
+                {% endfor %}        
+                Stand: {{cube.stand}}
+            </div>
+            {% endfor %}
+        {% endfor %}
+
+        
+      </div>
+  </div>
 {% endblock %}
+
 
 
 

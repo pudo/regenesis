@@ -96,6 +96,7 @@ footer {
 #sidebar {
   font-size: 0.9em;
   color: #666;
+  overflow: hidden;
 }
 
 #sidebar h3 {
@@ -108,13 +109,21 @@ footer {
   margin-top: 0em;
 }
 
+#sidebar {
+  word-wrap: break-word;
+    -moz-hyphens:auto; 
+    -webkit-hyphens:auto; 
+    -o-hyphens:auto; 
+    hyphens:auto; 
+}
+
 #sidebar ul {
   list-style-type: none;
   margin: 0;
 }
 
 #sidebar ul li {
-  margin: 0 0 0.5em 0;
+  margin: 0 0 1em 0;
 }
 
 /* Front page listings */
@@ -123,7 +132,7 @@ footer {
   margin: -0.4em 0 2em 0;
 }
 
-#page h2 {
+#page h2, h2.page-title {
   margin: 0 0 0.5em 0;
   text-transform: uppercase;
   font-size: 1.4em;

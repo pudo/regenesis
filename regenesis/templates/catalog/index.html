@@ -18,7 +18,12 @@
       </p>
     </div>
 
-    <h2 class="col-12">Statistiken</h2>
+    <h2 class="col-12"><i class="icon-th"></i> Statistiken</h2>
+    <p class="col-12">
+      Statistiken beschreiben die einzelnen Messreihen, die von den Ämtern erhoben werden. Die 
+      erfassten Daten werden dann in verschiedenen Fassungen mit unterschiedlichen Attributen 
+      (sogenannten Quadern) bereit gestellt.
+    </p>
     <div class="col-12 row">
       {% for statistic in statistics %}
       <div class="col-12 col-sm-6 col-lg-6 list-item">
@@ -28,19 +33,25 @@
       {% endfor %}
     </div>
 
-    <h2 class="col-12">Attribute</h2>
-      {% for group in dimensions | groupby('measure_type_name') %}
-        <h3 class="col-12">{{group.grouper}}</h3>
-        <div class="col-12 row"> 
-        {% for dimension in group.list %}
-          <div class="col-12 col-sm-6 col-lg-6 list-item">
-              
-              <a href="{{ url_for('dimension.view', catalog=catalog.name, name=dimension.name) }}">
-                <code>{{ dimension.name }}</code> {{ dimension.title_de }}</a>
-          </div>
-        {% endfor %}
+    <hr>
+    <h2 class="col-12"><i class="icon-list"></i> Attribute</h2>
+    <p class="col-12">
+      Statistiken setzen sich aus unterschiedlichen Attributen zusammen. Dazu gehören unter anderem 
+      geographische Angaben zum erfassten Bereich, Sachmerkmale die Eigenschaften einer Beobachtung
+      erfassen, Zeitmerkmale sowie die eigentlichen Messwerte, also die Ergebnisse der Erfassung.
+    </p>
+    {% for group in dimensions | groupby('measure_type_name') %}
+      <h3 class="col-12">{{group.grouper}}</h3>
+      <div class="col-12 row"> 
+      {% for dimension in group.list %}
+        <div class="col-12 col-sm-6 col-lg-6 list-item">
+            
+            <a href="{{ url_for('dimension.view', catalog=catalog.name, name=dimension.name) }}">
+              <code>{{ dimension.name }}</code> {{ dimension.title_de }}</a>
         </div>
       {% endfor %}
+      </div>
+    {% endfor %}
     
   </div>
 {% endblock %}

@@ -7,7 +7,7 @@ from regenesis.database import statistic_table, dimension_table
 blueprint = Blueprint('catalog', __name__)
 
 
-@blueprint.route('/<catalog>')
+@blueprint.route('/<catalog>/index.html')
 def view(catalog):
     catalog = get_catalog(catalog)
     statistics = statistic_table.find(order_by='title_de')
