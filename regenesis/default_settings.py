@@ -1,11 +1,12 @@
 
+DEBUG = True
 
 ETL_URL = 'postgresql://localhost/regenesis'
 DATA_DIRECTORY = 'exports/'
 
 CATALOG = {
     'regional': {
-        'title': 'Regionalstatistik-Datenbank',
+        'title': 'Regionalstatistik',
         'url': 'https://www.regionalstatistik.de/',
         'username': '',
         'password': '',

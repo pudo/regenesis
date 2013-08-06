@@ -6,15 +6,6 @@ from regenesis.database import dimension_table, value_table
 blueprint = Blueprint('dimension', __name__)
 
 
-@blueprint.route('/<catalog>/dimensions')
-def index(catalog):
-    catalog = get_catalog(catalog)
-    dimensions = dimension_table.find(order_by='title_de')
-    return render_template('dimension/index.html',
-                           catalog=catalog,
-                           dimensions=dimensions)
-
-
 @blueprint.route('/<catalog>/dimensions/<name>')
 def view(catalog, name):
     catalog = get_catalog(catalog)

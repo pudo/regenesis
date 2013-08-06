@@ -1,7 +1,9 @@
+#coding: utf-8
 from flask import render_template, Response, request
 from flask import session, redirect, flash, Markup, url_for
 
 from regenesis.core import app
+from regenesis.views.util import dimension_type_text as _dimension_type_text
 from regenesis.views.dimension import blueprint as dimension_blueprint
 from regenesis.views.statistic import blueprint as statistic_blueprint
 from regenesis.views.catalog import blueprint as catalog_blueprint
@@ -23,6 +25,16 @@ def text_filter(s):
     #s = s.replace('h2>', 'h3>')
     #s = s.replace('h1>', 'h2>')
     return Markup(s)
+
+
+@app.template_filter()
+def dimension_type_text(type_name):
+    return _dimension_type_text(type_name)
+
+
+@app.route('/favicon.ico')
+def nop():
+    return Response(status=404)
 
 @app.route('/')
 def index():

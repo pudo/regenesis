@@ -4,26 +4,44 @@
   {{ catalog.title }}
 {% endblock %}
 
+{% block metatitle %}
+  {{ catalog.title }}
+{% endblock %}
+
 {% block content %}
-  <div class="row">
-
-    <div class="span9 col-12 col-sm-12 col-lg-9 col-lg-offset-3 pull-right" id="page">
-        <h2>{{ catalog.title }}</h2>
-        <ul class="entries">
-          <li><a href="{{ url_for('statistic.index', catalog=catalog.name) }}">Statistiken</a></li>
-          <li><a href="{{ url_for('dimension.index', catalog=catalog.name) }}">Achsen</a></li>
-        </ul>
-
-        {{content}}
+  <div id="page" class="row">
+    <div class="col-12">
+      <p>
+        ReGenesis stellt die Statistiken der bundesweiten <a href="https://www.regionalstatistik.de/genesis/online/logon">Regionalstatistik</a> in einfachen,
+        zur maschinellen und journalistischen Weiterverabeitung geeigneten Formaten zur
+        Verfügung.
+      </p>
     </div>
 
-    <div class="span3 col-12 col-sm-12 col-lg-3 hidden-print" id="sidebar">
-        <p>
-          ReGenesis stellt die Statistiken der bundesweiten <a href="https://www.regionalstatistik.de/genesis/online/logon">Regionalstatistik</a> in einfachen,
-          zur maschinellen und journalistischen Weiterverabeitung geeigneten Formaten zur
-          Verfügung.
-        </p>
+    <h2 class="col-12">Statistiken</h2>
+    <div class="col-12 row">
+      {% for statistic in statistics %}
+      <div class="col-12 col-sm-6 col-lg-6 list-item">
+        <a href="{{ url_for('statistic.view', catalog=catalog.name, name=statistic.name) }}">
+          <code>{{ statistic.name }}</code> {{ statistic.title_de }}</a>
+      </div>
+      {% endfor %}
     </div>
+
+    <h2 class="col-12">Attribute</h2>
+      {% for group in dimensions | groupby('measure_type_name') %}
+        <h3 class="col-12">{{group.grouper}}</h3>
+        <div class="col-12 row"> 
+        {% for dimension in group.list %}
+          <div class="col-12 col-sm-6 col-lg-6 list-item">
+              
+              <a href="{{ url_for('dimension.view', catalog=catalog.name, name=dimension.name) }}">
+                <code>{{ dimension.name }}</code> {{ dimension.title_de }}</a>
+          </div>
+        {% endfor %}
+        </div>
+      {% endfor %}
+    
   </div>
 {% endblock %}
 
