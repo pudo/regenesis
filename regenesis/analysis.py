@@ -2,21 +2,19 @@ from pprint import pprint
 
 from regenesis.core import app, engine
 from regenesis.database import statistic_table, cube_table, reference_table
-
-import sqlaload as sl
+from regenesis.queries import get_cubes, get_dimensions
 
 def find_denormalized():
-    statistics = list(sl.find(engine, statistic_table))
-    for statistic in statistics:
-        cuboids = {}
-        cubes = list(sl.find(engine, cube_table,
-            statistic_name=statistic.get('name')))
-        for cube in cubes:
-            refs = list(sl.find(engine, reference_table,
-                cube_name=cube.get('name')))
-            cuboids[cube.get('name')] = \
-                [r.get('dimension_name') for r in refs]
-        pprint(cuboids)
-
-
-
+    res = {}
+    for cube in get_cubes():
+        statistic = cube.get('statistic_name')
+        if not statistic in res:
+            res[statistic] = {}
+        cube_name = cube.get('cube_name')
+        dimensions = get_dimensions(cube_name)
+        #pprint(dimensions)
+        dimensions = [d for d in dimensions if not d['dim_measure_type'].startswith('K-REG-MM')]
+        #dims = [(d['dim_name'], d['ref_type']) for d in dimensions]
+        dims = [d['dim_name'] for d in dimensions]
+        res[statistic][cube_name] = dims
+    pprint(res)

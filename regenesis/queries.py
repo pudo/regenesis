@@ -6,14 +6,22 @@ from regenesis.database import dimension_table, reference_table, get_fact_table
 
 from pprint import pprint
 
+
 def get_cube(cube_name):
+    cubes = get_cubes(cube_name)
+    assert len(cubes)==1, 'Multiple hits: ' + cube_name
+    return cubes.pop()
+
+
+def get_cubes(cube_name=None):
     ct = cube_table.table.alias('cube')
     st = statistic_table.table.alias('statistic')
     q = ct.join(st, st.c.name==ct.c.statistic_name)
     q = q.select(use_labels=True)
-    q = q.where(ct.c.name==cube_name)
-    res = engine.query(q)
-    return list(res).pop()
+    if cube_name is not None:
+        q = q.where(ct.c.name==cube_name)
+    return list(engine.query(q))
+
 
 def get_dimensions(cube_name):
     rt = reference_table.table.alias('ref')
@@ -23,6 +31,7 @@ def get_dimensions(cube_name):
     q = q.where(rt.c.cube_name==cube_name)
     res = engine.query(q)
     return list(res)
+
 
 def query_cube(cube_name, readable=True, verbose=False):
     cube = get_cube(cube_name)
