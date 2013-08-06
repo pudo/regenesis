@@ -1,4 +1,4 @@
-
+regenesis/static/data/*
 exports/*
 legacy/data/*
 *.DS_Store

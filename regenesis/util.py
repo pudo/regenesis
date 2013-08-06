@@ -1,5 +1,7 @@
 from datetime import datetime
 from hashlib import sha1
+from unicodedata import normalize as ucnorm, category
+
 
 def make_key(*a):
     parts = []
@@ -13,6 +15,7 @@ def make_key(*a):
         parts.append(part)
     return sha1('||'.join(parts)).hexdigest()
 
+
 def flatten(d, sep='_'):
     out = {}
     for k, v in d.items():
@@ -22,3 +25,24 @@ def flatten(d, sep='_'):
         else:
             out[k] = v
     return out
+
+
+def slugify(text):
+    if not isinstance(text, unicode):
+        text = unicode(text)
+    text = text.lower()
+    decomposed = ucnorm('NFKD', text)
+    filtered = []
+    for char in decomposed:
+        cat = category(char)
+        if char == "'" or cat.startswith('M') or cat.startswith('S'):
+            continue
+        elif cat.startswith('L') or cat.startswith('N'):
+            filtered.append(char)
+        else:
+            filtered.append('-')
+    text = u''.join(filtered)
+    while '--' in text:
+        text = text.replace('--', '-')
+    text = text.strip()
+    return ucnorm('NFKC', text)

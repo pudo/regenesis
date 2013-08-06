@@ -12,7 +12,6 @@ def view(catalog):
     catalog = get_catalog(catalog)
     statistics = statistic_table.find(order_by='title_de')
     dimensions = []
-
     for dimension in dimension_table.find(order_by='title_de'):
         dimension['measure_type_name'] = dimension_type_text(dimension['measure_type'])
         dimensions.append(dimension)

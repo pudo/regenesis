@@ -1,6 +1,8 @@
 from sqlalchemy import func, select, and_
+from dataset import freeze
 
 from regenesis.core import engine, app
+from regenesis.util import slugify
 from regenesis.database import cube_table, value_table, statistic_table
 from regenesis.database import dimension_table, reference_table, get_fact_table
 
@@ -36,8 +38,7 @@ def get_dimensions(cube_name):
 def query_cube(cube_name, readable=True):
     cube = get_cube(cube_name)
     dimensions = get_dimensions(cube_name)
-    #pprint(dimensions)
-    
+
     fact_table = get_fact_table(cube_name).table.alias('fact')
     q = fact_table.select()
     selects, wheres, tables = [], [], [fact_table]
@@ -77,7 +78,8 @@ def query_cube(cube_name, readable=True):
             wheres.append(vt.c.value_id==fact_table.c[name])
 
     q = select(selects, and_(*wheres), tables)
-    pprint(list(engine.query(q)))
+    return engine.query(q)
+    #pprint(list(engine.query(q)))
 
 
 def generate_cuboids(cube_name):
@@ -90,19 +92,23 @@ def generate_cuboids(cube_name):
     #dims = [d['dim_name'] for d in dimensions]
     pprint(dims)
 
+
 import os
 def generate_flatfiles():
-    #localpath = 
-    print app.static_folder
     for cube in get_cubes():
-        prefix = os.path.join(app.static_folder, 'data', cube['statistic_name'])
-        print prefix
-        #print cube['cube_name']
-        pass
+        prefix = os.path.join(app.static_folder, 'data',
+                              cube['statistic_name'],
+                              cube['cube_name'])
+        slug = slugify(cube['statistic_title_de'])
+        for (text, rb) in [('labeled', True), ('raw', False)]:
+            q = query_cube(cube['cube_name'], readable=rb)
+            fn = '%s-%s-%s.csv' % (slug, cube['cube_name'], text)
+            print [fn]
+            freeze(q, prefix=prefix, filename=fn)
+            #print cube['cube_name']
 
 
 if __name__ == '__main__':
     #query_cube('11111lj002', readable=False)
     #query_cube('71231gj001', readable=False)
     generate_cuboids('61511bj002')
-
