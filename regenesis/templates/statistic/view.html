@@ -17,7 +17,7 @@
             <li><i class="icon-tag"></i> Kennung: <code>{{statistic.name}}</code></li>
             <li><i class="icon-building"></i> Art: <a href="{{desc.legal}}">{{desc.type}}</a></li>
             <li><i class="icon-calendar"></i> Erhebung: {{desc.periodicity}}, {{desc.stag}}</li>
-            <li><i class="icon-compass"></i> Regionalebene: {{desc.geo}}</li>
+            <li><i class="icon-map-marker"></i> Regionalebene: {{desc.geo}}</li>
         </ul>
         
       </div>
@@ -27,15 +27,27 @@
         <p>{{desc.method | wraptext}}</p>
 
         <h2>Quader</h2>
+        {% if has_common %}
+            <h3>Gemeinsame Attribute</h3>
+            <p>In allen Tabellen dieser Statistik werden die folgenden Attribute ausgewiesen:</p>
+            <ul>
+                {% for dim in common %}
+                    <li><code>{{dim.dim_name}}</code> {{dim.dim_title_de}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% for group in cubes | groupby('admlevel') %}
-            <h3>{{group.grouper[1]}}</h3>
+            <h3>{{group.grouper[1]}} <small><a href="{{ url_for('dimension.view', catalog=catalog.name, name=group.grouper[2]) }}"><i class="icon-info-sign"></i></a></small></h3>
             {% for cube in group.list %}
             <div class="list-item">
-                {{loop.index}} - {{cube.name}}
-                {% for d in cube.dimensions %}
-                    {{ d.dim_title_de }} &middot;
-                {% endfor %}        
-                Stand: {{cube.stand}}
+                <div class="panel">
+                    <ul class="list-group">
+                        {% for d in cube.dimensions %}{% if d.show %}
+                            <li class="list-group-item"><i class="icon-columns"></i> <a href="{{ url_for('dimension.view', catalog=catalog.name, name=d.dim_name) }}"><code>{{d.dim_name}}</code> {{ d.dim_title_de }}</a> ({{d.type_text}})</li>
+                        {% endif %}{% endfor %}    
+                    </ul>
+                    <div class="panel-footer"><i class="icon-table"></i> <code>{{cube.name}}</code> - Stand: {{cube.stand}}</div>
+                </div>
             </div>
             {% endfor %}
         {% endfor %}
