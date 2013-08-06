@@ -17,7 +17,7 @@ def dimension_type_text(type_name):
 def parse_description(description):
     description = '\n' + description
     parts = SPLITTER.split(description)[1:]
-    data = {}
+    data = {'method': 'Keine Angaben.', 'type': 'Keine Angaben.'}
     for i in range(0, len(parts), 2):
         section, text = parts[i], parts[i+1].strip()
         if 'Art der Statistik' in section:
