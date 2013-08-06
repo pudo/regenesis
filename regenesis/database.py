@@ -34,7 +34,7 @@ def load_cube(cube, update=False):
     for reference in cube.references:
         reference_table.upsert(reference.to_row(), ['cube_name', 'dimension_name'])
 
-    fact_table = get_fact_table(cube_name)
+    fact_table = get_fact_table(cube.name)
     for ref in cube.measures:
         if ref.data_type == 'GANZ':
             fact_table.create_column(ref.name, BigInteger)
