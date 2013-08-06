@@ -5,15 +5,26 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="span12">
-          <h1>{{ catalog.title }}</h1>
-          <ul>
-            <li><a href="{{ url_for('statistic.index', catalog=catalog.name) }}">Statistiken</a></li>
-            <li><a href="{{ url_for('dimension.index', catalog=catalog.name) }}">Achsen</a></li>
-          </ul>
-        </div>
+  <div class="row">
+
+    <div class="span9 col-12 col-sm-12 col-lg-9 col-lg-offset-3 pull-right" id="page">
+        <h2>{{ catalog.title }}</h2>
+        <ul class="entries">
+          <li><a href="{{ url_for('statistic.index', catalog=catalog.name) }}">Statistiken</a></li>
+          <li><a href="{{ url_for('dimension.index', catalog=catalog.name) }}">Achsen</a></li>
+        </ul>
+
+        {{content}}
     </div>
+
+    <div class="span3 col-12 col-sm-12 col-lg-3 hidden-print" id="sidebar">
+        <p>
+          ReGenesis stellt die Statistiken der bundesweiten <a href="https://www.regionalstatistik.de/genesis/online/logon">Regionalstatistik</a> in einfachen,
+          zur maschinellen und journalistischen Weiterverabeitung geeigneten Formaten zur
+          Verfügung.
+        </p>
+    </div>
+  </div>
 {% endblock %}
 
 

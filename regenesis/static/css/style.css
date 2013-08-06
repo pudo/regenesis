@@ -1,0 +1,183 @@
+/*
+ * Palette:
+ *
+ * Purple: #46336B
+ * Red: #BA4B37
+ * Yellow: #F5DE14
+ * Green: #4C9923
+ * Blue: #265475 (Dark: #08c)
+ * #0F81FE
+ */
+
+html, body {
+  background-color: #fff;
+  color: #222;
+  line-height: 1.4em;
+}
+
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 940px;
+  }
+}
+  
+
+/*
+a {
+  color: #08c;
+}
+
+a:hover, a:active {
+  color: #08c;
+}
+*/
+
+a {
+  color: #BA4B37;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: square;
+  padding: 0;
+}
+
+li {
+  margin: 0 0 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  line-height: 1.8em;
+  margin-bottom: 0.6em;
+}
+
+
+/* Header Area */
+
+header {
+  margin: 2em 0 2em 0;
+}
+
+header h1 {
+  background-image: url(http://assets.pudo.org/img/logo_bigger.png);
+  background-repeat: no-repeat;
+  padding: 0.3em 0 0.2em 3em;
+}
+
+header h1.visible-sm {
+  margin: 0 0.3em 0 0.3em;
+  padding-left: 2.4em;
+}
+
+header h1 a {
+  color: #333;
+}
+
+/* Footer area */
+
+footer {
+  padding: 5em 0 5em 0;
+  color: #666;
+  text-align: right;
+}
+
+
+/* Sidebar */
+
+#sidebar {
+  font-size: 0.9em;
+  color: #666;
+}
+
+#sidebar h3 {
+  font-size: 1.2em;
+  margin: 0.5em 0 0.7em 0;
+  text-transform: lowercase;
+}
+
+#sidebar h3.first {
+  margin-top: 0em;
+}
+
+#sidebar ul {
+  list-style-type: none;
+  margin: 0;
+}
+
+#sidebar ul li {
+  margin: 0 0 0.5em 0;
+}
+
+/* Front page listings */
+
+#page .section {
+  margin: -0.4em 0 2em 0;
+}
+
+#page h2 {
+  margin: 0 0 0.5em 0;
+  text-transform: uppercase;
+  font-size: 1.4em;
+}
+
+#page h3 {
+  margin: 0 0 0.5em 0;
+  text-transform: uppercase;
+  font-size: 1.2em;
+}
+
+#page .entries {
+  list-style-type: none;
+  margin: 0;
+}
+
+#page .entries li {
+  text-indent: -3em;
+  padding-left: 3em;
+}
+
+#page .entries .date {
+  color: #666;
+}
+
+#page .entries .title {
+  font-weight: 600;
+}
+
+/* Post page */
+
+.post-date {
+  color: #666;
+}
+
+.related-posts {
+  
+}
+
+#post ul {
+  padding: 0 0 0 2em;
+}
+
+.captioned {
+  margin: 1em 0 1em 0;
+}
+
+.captioned.pull-right {
+  margin: 0em 0em 1em 1em;
+}
+
+.captioned .caption {
+  font-size: 0.9em;
+  margin: 0.5em 0 0 0;
+  color: #666;
+}
+
