@@ -1,6 +1,6 @@
 from sqlalchemy import func, select, and_
 
-from regenesis.core import engine
+from regenesis.core import engine, app
 from regenesis.database import cube_table, value_table, statistic_table
 from regenesis.database import dimension_table, reference_table, get_fact_table
 
@@ -89,6 +89,16 @@ def generate_cuboids(cube_name):
     dims = [(d['dim_name'], d['ref_type']) for d in dimensions]
     #dims = [d['dim_name'] for d in dimensions]
     pprint(dims)
+
+import os
+def generate_flatfiles():
+    #localpath = 
+    print app.static_folder
+    for cube in get_cubes():
+        prefix = os.path.join(app.static_folder, 'data', cube['statistic_name'])
+        print prefix
+        #print cube['cube_name']
+        pass
 
 
 if __name__ == '__main__':

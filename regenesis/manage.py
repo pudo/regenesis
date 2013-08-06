@@ -62,6 +62,12 @@ def load(catalog_name, update=False):
             log.info("Loading: %s (%s facts)", cube_name, len(cube.facts))
             load_cube(cube, update=update)
 
+@manager.command 
+def freezedata():
+    """ Generate flat files for data. """
+    from regenesis.queries import generate_flatfiles
+    generate_flatfiles()
+
 
 @manager.command 
 def analyse():
