@@ -23,13 +23,13 @@
       </div>
 
       <div class="col-12 col-sm-12 col-lg-9" id="page">
-        <h2>Methodische Hinweise</h2>
+        <h3>Methodische Hinweise</h3>
         <p>{{desc.method | wraptext}}</p>
 
-        <h2>Tabellen</h2>
+        <h3>Tabellen</h3>
         <p>Die untenstehenden Tabellen enthalten die Messungen zur zur Statistik <em>{{ statistic.title_de }}</em>. Sie unterscheiden sich in ihrer geographischen Granularität sowie den enthaltenen Attributen.</p>
         {% if has_common and False %}
-            <h3>Gemeinsame Attribute</h3>
+            <h4>Gemeinsame Attribute</h4>
             <p>In allen Tabellen dieser Statistik werden die folgenden Attribute ausgewiesen:</p>
             <ul>
                 {% for dim in common %}
@@ -38,7 +38,7 @@
             </ul>
         {% endif %}
         {% for group in cubes | groupby('admlevel') %}
-            <h3>{{group.grouper[1]}} <small><a href="{{ url_for('dimension.view', catalog=catalog.name, name=group.grouper[2]) }}"><i class="icon-info-sign"></i></a></small></h3>
+            <h4>{{group.grouper[1]}} <small><a href="{{ url_for('dimension.view', catalog=catalog.name, name=group.grouper[2]) }}"><i class="icon-info-sign"></i></a></small></h4>
             {% for cube in group.list %}
             <div class="list-item">
                 <div class="panel">
