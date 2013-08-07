@@ -17,9 +17,16 @@
     <link rel="shortcut icon" href="http://assets.pudo.org/img/opennews-favicon.ico" type="image/x-icon" />
   </head>
   <body class="body-data">
-    <header class="container">
-      <h1><a href="/index.html">{% block metatitle %}ReGenesis{% endblock %}</a></h1>
-    </header>
+    <div class="navbar">
+      <div class="container">
+        <a class="navbar-brand" href="/index.html">ReGENESIS</a>
+        <ul class="nav navbar-nav pull-right">
+          <li><a href="/regional/index.html">Regionalstatistik</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Kontakt &amp; Mitmachen</a></li>
+        </ul>
+      </div>
+    </div>
 
     <div id="airlock" class="container show-grid">
       {% block content %}This page intentionally left blank{% endblock %}
