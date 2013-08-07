@@ -56,6 +56,16 @@ def nop():
     return Response(status=404)
 
 
+@app.route('/faq.html')
+def page_faq():
+    return render_template('faq.html')
+
+
+@app.route('/contact.html')
+def page_contact():
+    return render_template('contact.html')
+
+
 @app.route('/index.html')
 def index():
     return render_template('index.html')

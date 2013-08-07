@@ -20,10 +20,8 @@ ADM_RANKS = {
 
 def make_keywords(titles):
     keywords = set()
-    print titles
     for t in titles:
         t = re.sub('\(.*\)', '', t)
-        print [t]
         for s in re.split('[\s\.\/]', t):
             s = s.strip()
             if not len(s) > 2 or s[0] != s[0].upper():
@@ -44,7 +42,7 @@ def view(catalog, slug, name):
     desc = parse_description(statistic['description_de'])
     cubes = []
     dims = defaultdict(int)
-    titles = set(statistic['title_de'])
+    titles = set([statistic['title_de']])
     for cube in get_cubes(name):
       cube['dimensions'] = get_dimensions(cube['name'])
       for dim in cube['dimensions']:

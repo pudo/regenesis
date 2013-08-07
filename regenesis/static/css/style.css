@@ -60,6 +60,13 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.6em;
 }
 
+.well.mono {
+  font-family: monospace;
+  font-size: 0.8em;
+  padding: 0.3em;
+  word-break: break-all;
+}
+
 
 /* Header Area */
 
@@ -115,37 +122,41 @@ footer {
 
 /* Front page listings */
 
-#page .section {
+.content .section {
   margin: -0.4em 0 2em 0;
 }
 
-#page h2, h2.page-title {
+.content h2, h2.page-title {
   margin: 0 0 0.5em 0;
   text-transform: uppercase;
   font-size: 1.4em;
 }
 
-#page h3 {
+.content h3 {
   margin: 0 0 0.5em 0;
   text-transform: uppercase;
   font-size: 1.2em;
 }
 
-#page .entries {
+.content .bullets {
+  margin-left: 2em;
+}
+
+.content .entries {
   list-style-type: none;
   margin: 0;
 }
 
-#page .entries li {
+.content .entries li {
   text-indent: -3em;
   padding-left: 3em;
 }
 
-#page .entries .date {
+.content .entries .date {
   color: #666;
 }
 
-#page .entries .title {
+.content .entries .title {
   font-weight: 600;
 }
 

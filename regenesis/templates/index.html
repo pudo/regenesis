@@ -9,11 +9,18 @@
 {% endblock %}
 
 {% block content %}
-  <div id="page" class="row" onload="document.location = '/regional/index.html';">
+  <div id="page" class="row">
     <div class="col-12">
       Aktuelle Datenbanken: <a href="/regional/index.html">Regionalstatistik</a>
     </div>
   </div>
 {% endblock %}
 
+{% block script %}
+  <script>
+    $(function() {
+        document.location.href = '/regional/index.html';
+    });
+  </script>
+{% endblock %}
 
