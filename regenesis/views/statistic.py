@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, render_template
 from collections import defaultdict
 
@@ -17,6 +18,18 @@ ADM_RANKS = {
     'dinsg': 5
 }
 
+def make_keywords(titles):
+    keywords = set()
+    print titles
+    for t in titles:
+        t = re.sub('\(.*\)', '', t)
+        print [t]
+        for s in re.split('[\s\.\/]', t):
+            s = s.strip()
+            if not len(s) > 2 or s[0] != s[0].upper():
+                continue
+            keywords.add(s)
+    return ', '.join(keywords)
 
 def get_cubes(statistic_name=None):
     q = cube_table.table.select()
@@ -31,11 +44,13 @@ def view(catalog, slug, name):
     desc = parse_description(statistic['description_de'])
     cubes = []
     dims = defaultdict(int)
+    titles = set(statistic['title_de'])
     for cube in get_cubes(name):
       cube['dimensions'] = get_dimensions(cube['name'])
       for dim in cube['dimensions']:
         dim['show'] = True
         dims[dim['dim_name']] += 1
+        titles.add(dim['dim_title_de'])
         dim['type_text'] = dimension_type_text(dim['dim_measure_type'])
         if dim['dim_measure_type'].startswith('K-REG'):
             cube['admlevel'] = (ADM_RANKS[dim['dim_name']], dim['dim_title_de'], dim['dim_name'])
@@ -49,10 +64,15 @@ def view(catalog, slug, name):
             if dim['dim_name'] in common and dim['show']:
                 #dim['show'] = False
                 commons[dim['dim_name']] = dim
+
+    keywords = make_keywords(titles)
+    description = desc.get('method', '')[:150]
     return render_template('statistic/view.html',
                            catalog=catalog,
                            desc=desc,
                            cubes=cubes,
+                           keywords_text=keywords,
+                           description_text=description,
                            common=commons.values(),
                            has_common=len(common) > 0,
                            statistic=statistic)

@@ -1,12 +1,8 @@
 {%extends "layout.html" %}
 
-{% block metatitle %}
-  {{ catalog.title }}
-{% endblock %}
+{% block metatitle %}{{ catalog.title }}{% endblock %}
 
-{% block title %}
-  {{ dimension.title_de }}
-{% endblock %}
+{% block title %}{{ dimension.title_de }}{% endblock %}
 
 {% block content %}
   <h2 class="page-title">{{ dimension.measure_type | dimension_type_text }}:  {{ dimension.title_de }}</h2>

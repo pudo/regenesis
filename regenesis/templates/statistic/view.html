@@ -1,12 +1,10 @@
 {%extends "layout.html" %}
 
-{% block metatitle %}
-  {{ catalog.title }}
-{% endblock %}
+{% block description %}{{ description_text }}{% endblock %}
 
-{% block title %}
-  {{ statistic.title_de }}
-{% endblock %}
+{% block keywords %}{{ keywords_text }}{% endblock %}
+
+{% block title %}{{ statistic.title_de }}{% endblock %}
 
 
 {% block content %}
