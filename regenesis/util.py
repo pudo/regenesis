@@ -45,4 +45,4 @@ def slugify(text):
     while '--' in text:
         text = text.replace('--', '-')
     text = text.strip()
-    return ucnorm('NFKC', text)
+    return ucnorm('NFKC', text).encode('ascii', 'ignore')
