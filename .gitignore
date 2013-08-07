@@ -1,5 +1,6 @@
 regenesis/static/data/*
 exports/*
+build/*
 legacy/data/*
 *.DS_Store
 *.pyc

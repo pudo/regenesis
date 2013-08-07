@@ -17,13 +17,15 @@ ADM_RANKS = {
     'dinsg': 5
 }
 
+
 def get_cubes(statistic_name=None):
     q = cube_table.table.select()
     q = q.where(cube_table.table.c.statistic_name==statistic_name)
     return list(engine.query(q))
 
-@blueprint.route('/<catalog>/statistics/<name>.html')
-def view(catalog, name):
+
+@blueprint.route('/<catalog>/statistics/<slug>.<name>.html')
+def view(catalog, slug, name):
     catalog = get_catalog(catalog)
     statistic = statistic_table.find_one(name=name)
     desc = parse_description(statistic['description_de'])

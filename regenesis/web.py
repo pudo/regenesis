@@ -39,6 +39,13 @@ def slugify(text):
     return _slugify(text)
 
 
+@app.context_processor
+def set_template_globals():
+    return {
+        'slugify': _slugify
+    }
+
+
 @app.template_filter()
 def dimension_type_text(type_name):
     return _dimension_type_text(type_name)
@@ -51,5 +58,4 @@ def nop():
 
 @app.route('/index.html')
 def index():
-    name, catalog = app.config.get('CATALOG').items().pop()
-    return redirect(url_for('catalog.view', catalog=name))
+    return render_template('index.html')

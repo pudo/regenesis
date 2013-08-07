@@ -1,8 +1,6 @@
 from sqlalchemy import func, select, and_
-from dataset import freeze
-
 from regenesis.core import engine, app
-from regenesis.util import slugify
+
 from regenesis.database import cube_table, value_table, statistic_table
 from regenesis.database import dimension_table, reference_table, get_fact_table
 
@@ -34,6 +32,11 @@ def get_dimensions(cube_name):
     res = engine.query(q)
     return list(res)
 
+def get_all_dimensions():
+    return list(dimension_table)
+
+def get_all_statistics():
+    return list(statistic_table)
 
 def query_cube(cube_name, readable=True):
     cube = get_cube(cube_name)
@@ -91,21 +94,6 @@ def generate_cuboids(cube_name):
     dims = [(d['dim_name'], d['ref_type']) for d in dimensions]
     #dims = [d['dim_name'] for d in dimensions]
     pprint(dims)
-
-
-import os
-def generate_flatfiles():
-    for cube in get_cubes():
-        prefix = os.path.join(app.static_folder, 'data',
-                              cube['statistic_name'],
-                              cube['cube_name'])
-        slug = slugify(cube['statistic_title_de'])
-        for (text, rb) in [('labeled', True), ('raw', False)]:
-            q = query_cube(cube['cube_name'], readable=rb)
-            fn = '%s-%s-%s.csv' % (slug, cube['cube_name'], text)
-            print [fn]
-            freeze(q, prefix=prefix, filename=fn)
-            #print cube['cube_name']
 
 
 if __name__ == '__main__':

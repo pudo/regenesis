@@ -51,7 +51,7 @@ def loadcube(catalog_name, cube_name):
     load_cube(cube)
 
 
-@manager.command 
+@manager.command
 def load(catalog_name, update=False):
     """ Load all cubes into a database. """
     catalog = get_catalog(catalog_name)
@@ -62,14 +62,22 @@ def load(catalog_name, update=False):
             log.info("Loading: %s (%s facts)", cube_name, len(cube.facts))
             load_cube(cube, update=update)
 
-@manager.command 
+
+@manager.command
 def freezedata():
     """ Generate flat files for data. """
-    from regenesis.queries import generate_flatfiles
-    generate_flatfiles()
+    from regenesis.freeze import freeze_data
+    freeze_data()
 
 
-@manager.command 
+@manager.command
+def freezehtml():
+    """ Generate flat files for HTML UI. """
+    from regenesis.freeze import freeze_html
+    freeze_html()
+
+
+@manager.command
 def analyse():
     from regenesis.analysis import find_denormalized
     find_denormalized()
@@ -77,4 +85,3 @@ def analyse():
 
 if __name__ == '__main__':
     manager.run()
-

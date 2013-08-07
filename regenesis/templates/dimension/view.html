@@ -20,7 +20,7 @@
         <h3>Statistiken <small>In denen dieses Attribut aufgeführt wird</small></h3>
         {% for statistic in statistics %}
           <div class="col-12 col-sm-12 col-lg-12 list-item">
-            <a href="{{ url_for('statistic.view', catalog=catalog.name, name=statistic.name) }}">
+            <a href="{{ url_for('statistic.view', catalog=catalog.name, slug=slugify(statistic.title_de), name=statistic.name) }}">
               <code>{{ statistic.name }}</code> {{ statistic.title_de }}</a>
             </div>
         {% endfor %}
