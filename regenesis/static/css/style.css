@@ -45,12 +45,12 @@ a:hover {
   text-decoration: none;
 }
 
-ul {
+#airlock ul {
   list-style-type: square;
   padding: 0;
 }
 
-li, .list-item {
+#airlock li, .list-item {
   margin: 0 0 10px;
 }
 
@@ -63,24 +63,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Header Area */
 
-header {
-  margin: 2em 0 2em 0;
+
+.navbar .navbar-brand {
+  /*font-weight: bold;*/
 }
 
-header h1 {
-  background-image: url(http://assets.pudo.org/img/logo_bigger.png);
-  background-repeat: no-repeat;
-  padding: 0.3em 0 0.2em 3em;
-}
-
-header h1.visible-sm {
-  margin: 0 0.3em 0 0.3em;
-  padding-left: 2.4em;
-}
-
-header h1 a {
-  color: #333;
-}
 
 /* Footer area */
 
