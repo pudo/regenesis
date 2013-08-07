@@ -1,4 +1,5 @@
 import os
+import shutil
 from dataset import freeze
 
 from regenesis.queries import get_all_statistics, get_all_dimensions
@@ -26,6 +27,11 @@ def freeze_request(req_path):
 
 
 def freeze_html():
+    print "Copying /static..."
+    outdir = os.path.join(get_output_dir(), 'static')
+    if os.path.isdir(outdir):
+        shutil.rmtree(outdir)
+    shutil.copytree(app.static_folder, outdir)
     freeze_request('/index.html')
     for catalog in ['regional']:
         freeze_request('/%s/index.html' % catalog)

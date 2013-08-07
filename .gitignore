@@ -5,5 +5,5 @@ legacy/data/*
 *.DS_Store
 *.pyc
 *.egg-info
-
+s3config
 *.raw
