@@ -1,0 +1,98 @@
+{%extends "layout.html" %}
+
+{% block description %}Häufige Fragen zum ReGENESIS-Projekt, welches die Daten von Bundes- und Landesstatisikämtern in einfacher Form bereitstellt.{% endblock %}
+
+{% block keywords %}FAQ, Statistik, Regionalstatistik, Daten{% endblock %}
+
+{% block title %}Häufig gestellte Fragen{% endblock %}
+
+{% block content %}
+    <h2 class="page-title">Häufig gestellte Fragen zu ReGENESIS</h2>
+    <div class="row">
+      <div class="col-12 col-sm-12 col-lg-6 content">
+        <h3>Was ist ReGENESIS?</h3>
+        <p>
+            ReGENESIS ist eine ständig aktualisierte Fassung der Statistiken von 
+            Bund und Ländern. Die Tabellen werden dabei in Formaten angeboten,
+            die für eine maschinelle Auswertung besonders gut geeignet sind.
+        </p>
+        <p>
+            Statistikdaten von Bund und Ländern liegen zumeist als aggregierte 
+            Berichte vor, die deren komplexer Tabellenaufbau kaum für
+            eine automatische Auswertung oder die Nutzung in interaktiven Grafiken
+            zugänglich sind.
+        </p>
+        <p>
+            ReGENESIS bezieht seine Daten daher aus dem Massenexport verschiedener
+            Instanzen des GENESIS-Systems, das vom Statistischen Bundesamt zur
+            Verwaltung statistischer Daten entwickelt wird. So werden statistische 
+            Daten im Rohformat, also sog. Datenquader, bereitgestellt.
+        </p>
+
+        <h3>Ist dies ein offizielles Angebot?</h3>
+        <p>
+            Nein. Die Daten entstammen aber einer amtlichen Quelle und sind im 
+            Inhalt nicht verändert. 
+        </p>
+
+        <h3>Sind die Daten frei verfügbar?</h3>
+        <p>
+            Der <a href="http://www.gesetze-im-internet.de/urhg/__5.html">§5 des Urheberrechts</a>
+            schliesst amtliche Statistiken vom Urheberrecht aus und stellt damit sicher, dass
+            diese frei genutzt werden können. Die abgeleiteten Tabellen auf ReGENESIS werden
+            ebenfalls ohne Einschränkungen unter den Bedingungen einer <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0-Lizenz</a> weitergegeben.
+        </p>
+        <p>
+            Falls Sie dennoch auf ReGENESIS als Quelle verweisen wollen, dann können Sie das zum Beispiel 
+            mit folgendem HTML-Snippet tun:
+
+        </p>
+        <div class="well mono">&lt;a href="http://regionalstatistik.de" target="_blank"&gt;Regionalstatistik.de&lt;/a&gt; via &lt;a href="http://regenesis.pudo.org/" target="_blank"&gt;ReGENESIS&lt;/a&gt;.</div>
+
+
+      </div>
+
+      <div class="col-12 col-sm-12 col-lg-6 content">
+        <h3>Was sind Statistiken, Tabellen und Attribute?</h3>
+        <p>
+            Zur Speicherung der Daten verwenden die Ämter ein komplexes Datenmodell,
+            welches sich für fortgeschrittene Analysen eignen. Im Sinne der
+            Nutzbarkeit versucht ReGENESIS dieses zu vereinfachen und einige der
+            verwendeten Fachbegriffe durch gängigere Wörter auszuwechseln:
+        </p>
+        <p>
+            <strong>Statistiken</strong> sind Erhebungen, deren Erfassung gesetzlich 
+            geregelt ist. Dabei werden verschiedene Merkmale erhoben, allerdings nicht
+            vollständig veröffentlicht um die Anonymisierung der Daten nicht zu 
+            gefährden.
+        </p>
+        <p>
+            <strong>Tabellen</strong> (auch Datenquader) sind Auszüge aus einzelnen 
+            Statistiken, die als Download angeboten werden. Sie enthalten zumeist nur
+            einen Teil der Daten, die insgesamt für die Statistik erhoben wurden. Zudem
+            werden Tabellen auf verschiedenen geographischen Niveaus angeboten, also 
+            z.B. nach Bundesland, Kreis oder Gemeinde.
+        </p>
+        <p>
+            <strong>Attribute</strong> (auch Merkmale, Messwerte, Dimensionen) sind 
+            mit den Spalten einer Tabelle vergleichbar. Sie beschreiben z.B. wann, wo 
+            und in welcher Untergruppe welche Werte beobachtet wurden.
+        </p>
+
+        <h3>Wie oft werden die Daten aktualisiert?</h3>
+        <p>
+            Im Regelbetrieb werden wie Daten wöchtenlich aus den ursprünglichen 
+            Datenquellen aktualisieren.
+        </p>
+
+        <h3>Gibt es eine Programmierschnittstelle (API)?</h3>
+        <p>
+            Noch nicht, aber eine einfach zu bedienende API auf der Basis von JSON wird
+            hoffentlich eine der nächsten Funktionen sein, die wir anbieten. Damit können 
+            Statistiken aus ReGENESIS direkt in Visualisierungen eingebunden werden, die 
+            somit immer aktuell bleiben.
+        </p>
+      </div>
+  </div>
+
+{% endblock %}
