@@ -33,7 +33,7 @@ def freeze_html():
         shutil.rmtree(outdir)
     shutil.copytree(app.static_folder, outdir)
     freeze_request('/index.html')
-    freeze_request('/faw.html')
+    freeze_request('/faq.html')
     freeze_request('/contact.html')
     for catalog in ['regional']:
         freeze_request('/%s/index.html' % catalog)
