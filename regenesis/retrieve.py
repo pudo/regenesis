@@ -8,19 +8,20 @@ from regenesis.cube import Cube
 QUADER = re.compile(r"<quaderDaten>\* (.*)<\/quaderDaten>", re.S | re.M)
 
 def fetch_index(catalog):
-    for i in range(10):
+    for i in range(10, 100):
         params = [
             ('method', 'DatenKatalog'),
             ('kennung', catalog.get('username')),
             ('passwort', catalog.get('password')),
             ('filter', '%s*' % i),
             ('bereich', 'Alle'),
-            ('listenLaenge', ''),
+            ('listenLaenge', '500'),
             ('sprache', 'de')
             ]
         doc = requests.get(catalog.get('index_url'), params=params)
         doc = etree.fromstring(doc.content)
         for entry in doc.findall('.//datenKatalogEintraege/datenKatalogEintraege'):
+            #print [entry.findtext('./code')]
             yield entry.findtext('./code')
 
 def fetch_cube(catalog, name):
@@ -55,6 +56,7 @@ def fetch_cube(catalog, name):
     #return doc.find('.//quaderDaten').text
     m = QUADER.search(doc.content)
     if m is None:
+        print "NO CUBE CONTENT", catalog, name
         return
     return HTMLParser().unescape(m.group(1))
     #return Cube(name, data)
