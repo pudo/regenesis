@@ -7,6 +7,7 @@ from regenesis.queries import get_cubes, query_cube
 from regenesis.database import value_table
 from regenesis.util import slugify
 from regenesis.web import app
+from regenesis.core import engine
 
 client = app.test_client()
 
@@ -57,10 +58,10 @@ def freeze_data():
                               cube['cube_name'])
         slug = slugify(cube['statistic_title_de'])
         for (text, rb) in [('labeled', True), ('raw', False)]:
-            q = query_cube(cube['cube_name'], readable=rb)
+            q, ps = query_cube(cube['cube_name'], readable=rb)
             fn = '%s-%s-%s.csv' % (slug, cube['cube_name'], text)
             print [fn]
-            freeze(q, prefix=prefix, filename=fn)
+            freeze(engine.query(q), prefix=prefix, filename=fn)
             #print cube['cube_name']
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 from sqlalchemy import func, select, and_
+from sqlalchemy.sql.expression import bindparam
 from regenesis.core import engine, app
 
 from regenesis.database import cube_table, value_table, statistic_table
@@ -49,6 +50,7 @@ def query_cube(cube_name, readable=True):
     if not readable:
         selects.append(fact_table.columns['fact_id'].label('REGENESIS_ID'))
 
+    params = {}
     for dim in dimensions:
         name = dim.get('dim_name')
         field = name.upper()
@@ -77,11 +79,13 @@ def query_cube(cube_name, readable=True):
             selects.append(vt.c.name.label(id_col))
             selects.append(vt.c.title_de.label(field))
             tables.append(vt)
-            wheres.append(vt.c.dimension_name==name)
+            params[name] = name
+            wheres.append(vt.c.dimension_name==bindparam(name, value=name))
             wheres.append(vt.c.value_id==fact_table.c[name])
 
     q = select(selects, and_(*wheres), tables)
-    return engine.query(q)
+    return q, params
+    #return engine.query(q)
     #pprint(list(engine.query(q)))
 
 
