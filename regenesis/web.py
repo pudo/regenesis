@@ -42,7 +42,8 @@ def slugify(text):
 @app.context_processor
 def set_template_globals():
     return {
-        'slugify': _slugify
+        'slugify': _slugify,
+        'API': app.config.get('API_ENDPOINT')
     }
 
 
@@ -54,6 +55,12 @@ def dimension_type_text(type_name):
 @app.route('/favicon.ico')
 def nop():
     return Response(status=404)
+
+
+@app.route('/api.html')
+def page_api():
+    return render_template('api.html')
+
 
 
 @app.route('/faq.html')

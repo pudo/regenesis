@@ -4,6 +4,8 @@ DEBUG = True
 ETL_URL = 'postgresql://localhost/regenesis'
 DATA_DIRECTORY = 'exports/'
 
+API_ENDPOINT = 'http://api.regenesis.pudo.org'
+
 CATALOG = {
     'regional': {
         'title': 'Regionalstatistik',

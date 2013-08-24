@@ -40,11 +40,13 @@
             {% for cube in group.list %}
             <div class="list-item">
                 <div class="panel">
-                    <div class="panel-heading"><i class="icon-table"></i> Tabelle <code>{{cube.name}}</code></div>
+                    <div class="panel-heading"><i class="icon-table"></i> Tabelle <code>{{cube.name}}</code>
+                    <span class="pull-right">Stand: {{cube.stand}}</span></div>
                     <ul class="list-group">
                         {% for d in cube.dimensions %}{% if d.show %}
                             <li class="list-group-item"><i class="icon-columns"></i> <a href="{{ url_for('dimension.view', catalog=catalog.name, name=d.dim_name) }}"><code>{{d.dim_name}}</code> {{ d.dim_title_de }}</a> ({{d.type_text}})</li>
                         {% endif %}{% endfor %}    
+
                     </ul>
                     <div class="btn-group">
                         <a href="/data/{{statistic.name}}/{{cube.name}}/{{statistic.title_de | slugify }}-{{cube.name}}-labeled.csv" 
@@ -52,9 +54,14 @@
                             Rechercheversion <span class="badge">CSV</span></a>
                         <a href="/data/{{statistic.name}}/{{cube.name}}/{{statistic.title_de | slugify }}-{{cube.name}}-raw.csv" 
                             class="btn btn-default"><i class="icon-download"></i>
-                            Rohdatenversion <span class="badge">CSV</span></a>
+                            Rohversion <span class="badge">CSV</span></a>
+                        <a href="{{API}}/cube/{{cube.name}}/aggregate" 
+                            class="btn btn-default"><i class="icon-cloud"></i>
+                            API-Endpunkt <span class="badge">JSON</span></a>
+                        <a href="/api.html" 
+                            class="btn btn-default"><i class="icon-question-sign"></i>
+                            API-Doku</a>
                     </div>
-                    <span class="pull-right">Stand: {{cube.stand}}</span>
                 </div>
             </div>
             {% endfor %}

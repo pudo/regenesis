@@ -1,0 +1,106 @@
+{%extends "layout.html" %}
+
+{% block description %}JSON-basierte API (Programmierschnittstelle) für die statistischen Daten von Bund und Ländern.{% endblock %}
+
+{% block keywords %}API, JSON, Statistik, Regionalstatistik, Daten{% endblock %}
+
+{% block title %}API (Programmierschnittstelle){% endblock %}
+
+{% block content %}
+    <h2 class="page-title">API (Programmierschnittstelle)</h2>
+    <div class="row">
+      <div class="col-12 col-sm-12 col-lg-6 content">
+        <h3>Einfach auf die ReGENESIS-Daten zugreifen</h3>
+        <p>
+            ReGENESIS verfügt über eine Programmierschnittstelle, die dynamisch
+            Daten aus den verschiednenen Statistiken als JSON zur Verfügung
+            stellt. Die Schnittstelle unterstützt das Filtern und Gruppieren
+            der Daten nach allen enthaltenen Attributen. So können aus einer 
+            Tabelle etwa alle Werte eines bestimmten Jahres gefiltert, und dann 
+            nach Kreis aggregiert werden.
+        </p>
+        <p>
+            Daten aus der ReGENESIS-API können in interaktiven Visualisierungen
+            genutzt werden, sodass diese stets aktuelle Werte ausweisen. Die 
+            Ergebnisse der API werden gecached, um eventuelle Lastspitzen durch 
+            eine Verlinkung auf vielbesuchten Seiten abzufangen. 
+        </p>
+        
+        <h3>Basierend auf "Cubes"</h3>
+        <p>
+            Die ReGENESIS-API basiert auf dem freien Softwarepaket <a href="http://cubes.databrewery.org/index.html">Cubes</a>,
+            einer Komponente der <a href="http://databrewery.org/">DataBrewery</a>.
+        </p>
+        <p>
+            <strong>Die vollständige Dokumentation der HTTP-API von Cubes ist auf 
+            der Webseite des Projekts <a href="http://pythonhosted.org/cubes/server.html">verfügbar</a>.</strong>
+        </p>
+        <h3>Sag Hallo</h3>
+        <p>
+            Falls Sie die API von ReGENESIS in Ihren Projekten nutzen, dann 
+            teilen Sie uns das gerne mit! Wir wollen gerne erfharen, wie und 
+            wofür dieses Angebot genutzt wird. 
+        </p>
+        <code>friedrich@pudo.org</code>
+      </div>
+
+      <div class="col-12 col-sm-12 col-lg-6 content">
+        <h3>Anwendungsbeispiel</h3>
+        <p>
+            Zur Nutzung der API können die Endpunkte genutzt werden, die auf 
+            den Infoseiten zu einzelnen Statistiken verfügbar sind. Neben der
+            <a href="http://pythonhosted.org/cubes/server.html">Dokumentation der HTTP-API</a> hier einige Beispiele,
+            die auf der <a href="/regional/statistics/insolvenzstatistik.52411.html">Insolvenzstatistik (52411)</a>
+            basieren. Alle verfügbaren Attribute und Messwerte sind auf der 
+            Infoseitezur Statistik ausgewiesen. Die URL des Endpunkts ist:
+        </p>
+        <p>
+            <a href="http://api.regenesis.pudo.org/cube/52411kj002/aggregate">
+                <code>http://api.regenesis.pudo.org/cube/52411kj002/aggregate</code></a>
+        </p>
+        <p>
+            Ruft man ihn direkt auf, so erhält man eine JSON-Antwort mit einem
+            <code>summary</code>-Objekt. Dieses weist die Summe aller Insolvenzen
+            (<code>isv001_sum</code>) und die Gesamtzahl der Datenzeilen (15702)
+            aus.
+        </p>
+        <p>
+            Mit dem <code>cut</code>-Parameter können die Einträge gefiltert werden.
+            Die Insolvenzstatistik verfügt über ein <code>jahr</code>-Attribut, 
+            welches mit dem folgenden Query auf das Jahr 2011 eingegrenzt werden kann:
+        </p>
+        <p>
+            <code>.../aggregate?cut=jahr.text:2011</code>
+        </p>
+        <p>
+            Neben dem <code>jahr</code> können wir auch andere Attribute filtern, 
+            etwa die Art des Verfahrens (Attribut <code>isvat3</code>):
+        </p>
+        <p>
+            <a href="http://api.regenesis.pudo.org/cube/52411kj002/aggregate?cut=jahr.text:2011|isvat1.name:isvart01">
+                <code>.../aggregate?cut=jahr.text:2011|isvat1.name:isvart01</code></a>
+        </p>
+        <p>
+            Das <code>summary</code>-Objekt in der Antwort weist nun nur noch 413
+            Zeilen aus: eine Insolvenzstatistik für jeden Kreis. Zur Darstellung, 
+            z.B. auf einer Karte, wollen wir diese Kreise einzeln ausgewiesen haben.
+            Dazu ist der <code>drilldown</code>-Parameter geeignet:
+        </p>
+        <p>
+            <a href="http://api.regenesis.pudo.org/cube/52411kj002/aggregate?cut=jahr.text:2011|isvat1.name:isvart01&drilldown=kreise">
+                <code>.../aggregate?cut=jahr.text:2011|isvat1.name:isvart01<br>&amp;drilldown=kreise</code></a>
+        </p>
+        <p>
+            Die Antwort enthält nun neben der <code>summary</code> ein <code>cells</code>-Objekt, in 
+            dem für jeden Kreis dessen Name, AGZ und die Zahl der eröffneten Insolvenzverfahren
+            ausgewiesen ist.
+        </p>
+        <p>
+            Neben den hier vorgestellten Optionen können auch Paginierung und Sortierung 
+            beeinflusst werden. Mehr Informationen dazu enthält die
+            <a href="http://pythonhosted.org/cubes/server.html#http-api">Dokumentation</a>.
+        </p>
+      </div>
+  </div>
+
+{% endblock %}
