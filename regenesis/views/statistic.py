@@ -39,7 +39,7 @@ def get_cubes(statistic_name=None):
 def view(catalog, slug, name):
     catalog = get_catalog(catalog)
     statistic = statistic_table.find_one(name=name)
-    desc = parse_description(statistic['description_de'])
+    desc = parse_description(statistic['description_de'] or '')
     cubes = []
     dims = defaultdict(int)
     titles = set([statistic['title_de']])
